@@ -175,19 +175,11 @@ The SQL query I created for this question is as follows:
  Query Result: Yorkville West
  
 Question 7. Terraform Workflow
-
-Which of the following sequences, respectively, describes the workflow for:
-
-Downloading the provider plugins and setting up backend,
-Generating proposed changes and auto-executing the plan
-Remove all resources managed by terraform`
-
-Question 7. Terraform Workflow
 Which of the following sequences, respectively, describes the workflow for:
 
 * Downloading the provider plugins and setting up backend,
 * Generating proposed changes and auto-executing the plan
-* Remove all resources managed by terraform`
+* Remove all resources managed by terraform
 
 The step-by-step process I followed to find the solution:
 
@@ -198,13 +190,69 @@ As a first step, we need to set up the system and prepare the basic files.
 Step 1: Preparation and Installation
 First, let's prepare the environment where Terraform will operate.
 
-Terraform Installation:
+Terraform Installation: I downloaded the AMD64 binary terraform.exe file for Windows 64-bit from the website https://developer.hashicorp.com/terraform/install#windows and placed it on a computer named C:\Terraform.
 
+I verified the installation using the `terraform -v` command in the terminal.
 
-  
+ <img width="465" height="78" alt="image" src="https://github.com/user-attachments/assets/29c772b5-52a2-490d-a1af-1b028565ab0f" />
 
+Step 2: Google Cloud Authentication (Service Account)
 
+To create the key that Terraform needs to perform operations:
 
+* I created a Service Account named terraform-runner through the Google Cloud Console.
 
+<img width="1116" height="610" alt="image" src="https://github.com/user-attachments/assets/f5a3ee03-b73c-427b-a7b0-0f72717e180c" />
 
-4. green_tripdata_2025-11 tablosu ve taxi_zone_lookup tablolarını 
+* I granted Storage Admin and BigQuery Admin privileges to this account.
+
+* I downloaded a JSON file named awesome-icon-484918-n5-6e0f8d98aacb.json containing the credentials and securely placed it in my working folder, C:\Terraform.
+
+Step 3: Preparing Terraform Code
+
+* In the main.tf file under terraform_basic, I configured the settings to connect to Google Cloud.
+
+* In the variables.tf file under terraform_with_variables, I assigned information such as Project ID, region, and bucket names to variables to make the code more flexible.
+
+  Step 4: Running the Terraform Lifecycle
+To deploy the code we prepared, I applied Terraform's standard workflow.
+
+I ran the following codes sequentially in the terminal:
+
+1. terraform init: I downloaded the necessary Google plugins and started the workspace.
+
+    <img width="643" height="336" alt="image" src="https://github.com/user-attachments/assets/da7ac54d-8de7-4f9a-862c-3edc79bca1ab" />
+
+2. Terraform plan: We performed a bug check and got a preview of what will be created.
+
+    <img width="1132" height="966" alt="image" src="https://github.com/user-attachments/assets/779753ab-e80d-4667-8c0b-cfe172154e77" />
+
+3. Terraform apply: I have given my consent for the creation of resources in the real world (on the GCP).
+
+    <img width="1126" height="950" alt="image" src="https://github.com/user-attachments/assets/33ba4b5b-5786-4f1f-a3a8-dec94a42e390" />
+
+    <img width="969" height="218" alt="image" src="https://github.com/user-attachments/assets/51698e5e-3382-4b05-985d-7c290d3f2c1d" />
+
+4. Terraform Destroy: I have completed the assignment and will no longer be using the resources, so I have deleted all the structures we created.
+
+    <img width="1402" height="761" alt="image" src="https://github.com/user-attachments/assets/d8d85f95-1966-411d-9744-b1aa47a8c216" />
+
+    <img width="940" height="858" alt="image" src="https://github.com/user-attachments/assets/5fd75992-e689-4123-b38a-c65f5685555f" />
+
+Now, regarding our question:
+
+1. Downloading provider plugins and setting up the backend
+This is the Initialization phase. Terraform needs to recognize the providers (GCP, AWS, etc.) in the main.tf file and download the necessary ones.
+
+Command: terraform init
+
+2. Creating modified disruptions and automatically executing the plan
+This actually asks about a combination of two interruptions. First, a plan is created, then this plan is implemented (executed). However, since the question focuses on the "executing the plan" (uploading/creating) unit, the main command is the one that removes the resources internally.
+
+Command: terraform apply (Note: normally terraform plan shows plan changes, while terraform apply executes this plan.)
+
+3. Removing all resources managed by Terraform
+This is the "destroying infrastructure" phase. It securely deletes all created resources from the cloud.
+
+Command: terraform destroy
+ 
