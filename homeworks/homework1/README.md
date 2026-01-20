@@ -255,4 +255,4 @@ Command: terraform apply (Note: normally terraform plan shows plan changes, whil
 This is the "destroying infrastructure" phase. It securely deletes all created resources from the cloud.
 
 Command: terraform destroy
- 
+  Answer : terraform init, terraform apply -auto-approve, terraform destroy
