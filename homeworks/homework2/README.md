@@ -35,8 +35,8 @@ curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/i
  <img width="1819" height="460" alt="image" src="https://github.com/user-attachments/assets/dcf9b90d-c2b1-44a6-85cf-d3a02e592ac4" />
  10 - In the Executions tab, I observed that the workflow was running successfully.
  <img width="1835" height="696" alt="image" src="https://github.com/user-attachments/assets/2cd0c8c4-a731-4ee9-8a14-f285c0fbd9be" />
-
-
-
+ 11 -  I've successfully run my first stream, and now I want to run my Python stream, but first I need to install the Kestra library using the `pip install kestra` command. So I ran the `pip install kestra` command in the cmd terminal.
+ <img width="1388" height="575" alt="image" src="https://github.com/user-attachments/assets/6178f9c9-5926-4ec2-b225-60885cf8caab" />
+12 - I selected the 02_python.yaml file in the Flows tab of the Kestra interface and ran it using the Execution button.
     
 
