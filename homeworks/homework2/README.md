@@ -2,7 +2,12 @@ To complete this assignment, I first followed these steps in order to upload the
 
 1. I created a folder named 02-workflow-orchestration under the C drive.                                                        <img width="323" height="27" alt="image" src="https://github.com/user-attachments/assets/45d3ac24-487b-424e-8996-126187ac5c3c" />
 
-2. I created a file named docker-compose.yaml with the given content under the 02-workflow-orchestration folder.
+2. I created a file named docker-compose.yaml with the given content under the 02-workflow-orchestration folder.I ran the following command in the cmd terminal to create a Dockerfile:
+
+CMD command : echo FROM python:313 > Dockerfile 
+<img width="762" height="46" alt="image" src="https://github.com/user-attachments/assets/6eef7daf-bdcd-4620-8887-997ac0a540a8" />
+
+This created the Dockerfile that the ingest service needs.
 
 3. I ran the `docker compose up -d` command to download and run the Kestra and Postgres database in the background.
  <img width="565" height="211" alt="image" src="https://github.com/user-attachments/assets/3bd3fe5d-fa35-4808-89a9-b1342db422ab" />
@@ -38,5 +43,6 @@ curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/i
  11 -  I've successfully run my first stream, and now I want to run my Python stream, but first I need to install the Kestra library using the `pip install kestra` command. So I ran the `pip install kestra` command in the cmd terminal.
  <img width="1388" height="575" alt="image" src="https://github.com/user-attachments/assets/6178f9c9-5926-4ec2-b225-60885cf8caab" />
 12 - I selected the 02_python.yaml file in the Flows tab of the Kestra interface and ran it using the Execution button.
-    
+     In the Executions tab, I observed that the workflow was running successfully.
+<img width="1787" height="384" alt="image" src="https://github.com/user-attachments/assets/8ecca2bc-d46a-42c3-89d3-62fe7e4ea0cd" />
 
