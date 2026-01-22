@@ -46,3 +46,15 @@ curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/i
      In the Executions tab, I observed that the workflow was running successfully.
 <img width="1787" height="384" alt="image" src="https://github.com/user-attachments/assets/8ecca2bc-d46a-42c3-89d3-62fe7e4ea0cd" />
 
+13 : To access PostgreSQL, I used the pgadmin interface at http://localhost:8085/. My login information was available in my docker-compose.yaml file. I logged in using the email address admin@admin.com and the password root.
+<img width="1877" height="870" alt="image" src="https://github.com/user-attachments/assets/2a5492ad-d33f-45f1-9a2c-1e83cb160f67" />
+<img width="1904" height="538" alt="image" src="https://github.com/user-attachments/assets/61f04c91-f280-42aa-bb77-3ac972e5311d" />
+14: As in the first assignment, I added a new server via the pgAdmin panel. First, I named the server workflow-orchestration.
+<img width="701" height="553" alt="image" src="https://github.com/user-attachments/assets/0c8da8ce-fa44-444e-89e2-46515f15f072" />
+I set the hostname to pgdatabase, port to 5432, database name to ny_taxi, and usernames to root, and then registered the server.
+<img width="697" height="547" alt="image" src="https://github.com/user-attachments/assets/df411371-cd17-4010-b672-639c3ab092c1" />
+After connecting to the server, I examined the schema and table tabs.
+<img width="414" height="961" alt="image" src="https://github.com/user-attachments/assets/20ac9d91-1f15-44b1-b921-97c1ad7e0961" />
+
+
+
