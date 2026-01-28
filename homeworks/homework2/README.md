@@ -11,12 +11,17 @@ This created the Dockerfile that the ingest service needs.
 
 3. I ran the `docker compose up -d` command to download and run the Kestra and Postgres database in the background.
  <img width="565" height="211" alt="image" src="https://github.com/user-attachments/assets/3bd3fe5d-fa35-4808-89a9-b1342db422ab" />
+ 
  4. I accessed the Kestra interface by going to my browser and using http://localhost:8080/ui. I logged in to the Kestra server using the email address admin@kestra.io and the password admin1234, as specified in my compose.yaml file.
 
-    <img width="1766" height="832" alt="image" src="https://github.com/user-attachments/assets/9273a742-a363-4b51-beb5-e4d9b2160238" />
+ <img width="1766" height="832" alt="image" src="https://github.com/user-attachments/assets/9273a742-a363-4b51-beb5-e4d9b2160238" />
+
  5. After downloading all the YAML files related to the flows in the entire `flows` folder to a folder named `flows`, I added it to the `02-workflow-orchestration` folder I created under the C drive.
+
  6. To programmatically add streams to Kestra, I ran the following commands in the terminal.
-# Import all flows: assuming username admin@kestra.io and password Admin1234 (adjust to match your username and password)
+
+Import all flows: assuming username admin@kestra.io and password Admin1234 (adjust to match your username and password)
+
 curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/01_hello_world.yaml
 curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/02_python.yaml
 curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/import -F fileUpload=@flows/03_getting_started_data_pipeline.yaml
