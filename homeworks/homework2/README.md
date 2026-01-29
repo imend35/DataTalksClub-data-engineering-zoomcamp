@@ -51,15 +51,123 @@ curl -X POST -u 'admin@kestra.io:Admin1234' http://localhost:8080/api/v1/flows/i
      In the Executions tab, I observed that the workflow was running successfully.
 <img width="1787" height="384" alt="image" src="https://github.com/user-attachments/assets/8ecca2bc-d46a-42c3-89d3-62fe7e4ea0cd" />
 
-13 : To access PostgreSQL, I used the pgadmin interface at http://localhost:8085/. My login information was available in my docker-compose.yaml file. I logged in using the email address admin@admin.com and the password root.
-<img width="1877" height="870" alt="image" src="https://github.com/user-attachments/assets/2a5492ad-d33f-45f1-9a2c-1e83cb160f67" />
-<img width="1904" height="538" alt="image" src="https://github.com/user-attachments/assets/61f04c91-f280-42aa-bb77-3ac972e5311d" />
-14: As in the first assignment, I added a new server via the pgAdmin panel. First, I named the server workflow-orchestration.
-<img width="701" height="553" alt="image" src="https://github.com/user-attachments/assets/0c8da8ce-fa44-444e-89e2-46515f15f072" />
-I set the hostname to pgdatabase, port to 5432, database name to ny_taxi, and usernames to root, and then registered the server.
-<img width="697" height="547" alt="image" src="https://github.com/user-attachments/assets/df411371-cd17-4010-b672-639c3ab092c1" />
-After connecting to the server, I examined the schema and table tabs.
-<img width="414" height="961" alt="image" src="https://github.com/user-attachments/assets/20ac9d91-1f15-44b1-b921-97c1ad7e0961" />
+13 : I updated the 06_gcp_kv.yaml file by copying the content information from my own project and the Google Cloud JSON Key file. I executed the 06_gcp_kv.yaml stream via Kestra and observed that it worked successfully.
+
+<img width="1821" height="714" alt="image" src="https://github.com/user-attachments/assets/b650f189-0d9f-4b13-9ed7-dd3bb7e41cb4" />
+
+14 : I then executed the 07_gcp_setup.yaml stream via Kestra and observed that it worked successfully.
+
+<img width="1839" height="721" alt="image" src="https://github.com/user-attachments/assets/433cbaad-1c9b-46ae-afeb-d4ab02885264" />
+
+
+15 : On the Flow screen, I selected the 09_gcp_taxi_scheduled.yaml flow and on the Triggers tab of the Flow screen, I selected Green Schedule.
+
+Start Date: 2019-01-01 (Saat 00:00:00) ve End Date: 2021-07-31 (Saat 23:59:59)  seçtim. Exceute Backfill butonuna bastım.
+
+<img width="1786" height="737" alt="image" src="https://github.com/user-attachments/assets/d9b6fd82-0414-4e91-bcef-3c56096785fd" />
+
+16: I saw that CSV files were being uploaded under Bucket.
+
+<img width="1673" height="906" alt="image" src="https://github.com/user-attachments/assets/59c2f4d2-5282-438a-a290-009c8dec6e6e" />
+
+17 : I also performed the same Backfill Execute process for the Yellow Schedule with a Start Date of 2019-01-01 (00:00:00) and an End Date of 2021-07-31 (23:59:59), and ensured that the Yellow CSV files were uploaded to Google Cloud.
 
 
 
+18 : I observed that the yellow_tripdata table, which combines the data from the relevant dates in the yellow CSV files I uploaded, and the green_tripdata table, which combines the data from the relevant dates in the green CSV files I uploaded, were created under the zoomcamp dataset I created within BigQuery.
+
+<img width="1574" height="874" alt="image" src="https://github.com/user-attachments/assets/a42706f8-2b36-49c1-b61a-e5a1ceaa0aab" />
+
+<img width="1680" height="879" alt="image" src="https://github.com/user-attachments/assets/b60735ad-fc2d-482c-b694-fe4e5ec68398" />
+
+
+Quiz Questions
+Complete the quiz shown below. It's a set of 6 multiple-choice questions to test your understanding of workflow orchestration, Kestra, and ETL pipelines.
+
+1 - Within the execution for Yellow Taxi data for the year 2020 and month 12: what is the uncompressed file size (i.e. the output file yellow_tripdata_2020-12.csv of the extract task)?
+128.3 MiB
+134.5 MiB
+364.7 MiB
+692.6 MiB
+
+Answer : 128.3 MiB
+
+2. What is the rendered value of the variable file when the inputs taxi is set to green, year is set to 2020, and month is set to 04 during execution?
+{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv
+green_tripdata_2020-04.csv
+green_tripdata_04_2020.csv
+green_tripdata_2020.csv
+
+Answer : green_tripdata_2020-04.csv
+
+Why?
+The variable definition in Kestra (for example, in files numbered 04 or 08) is as follows:
+
+file: "{{inputs.taxi}}_tripdata_{{inputs.year}}-{{inputs.month}}.csv"
+
+The question gives us the inputs:
+taxi: green
+year: 2020
+month: 04
+
+When Kestra renders these values ​​into the template:
+{{inputs.taxi}} is replaced with green.
+_tripdata_ remains as is.
+{{inputs.year}} is replaced with 2020.
+The hyphen remains.
+
+{{inputs.month}} is replaced with 04.
+The .csv extension is added.
+
+Answer : green_tripdata_2020-04.csv
+
+3. How many rows are there for the Yellow Taxi data for all CSV files in the year 2020?
+13,537.299
+24,648,499
+18,324,219
+29,430,127
+
+Answer : 
+
+
+4. How many rows are there for the Green Taxi data for all CSV files in the year 2020?
+5,327,301
+936,199
+1,734,051
+1,342,034
+
+Answer : 1,734,051
+
+<img width="1425" height="746" alt="image" src="https://github.com/user-attachments/assets/afba1f52-1af9-468c-b4bc-9ae608a8268e" />
+
+5. How many rows are there for the Yellow Taxi data for the March 2021 CSV file?
+1,428,092
+706,911
+1,925,152
+2,561,031
+
+Answer : 1,925,152
+
+<img width="1425" height="692" alt="image" src="https://github.com/user-attachments/assets/cb69c083-bfd0-40a1-a7b6-18dc30d4afe1" />
+
+6. How would you configure the timezone to New York in a Schedule trigger?
+Add a timezone property set to EST in the Schedule trigger configuration
+Add a timezone property set to America/New_York in the Schedule trigger configuration
+Add a timezone property set to UTC-5 in the Schedule trigger configuration
+Add a location property set to New_York in the Schedule trigger configuration
+
+Answer : Add a timezone property set to America/New_York in the Schedule trigger configuration
+
+Why?
+Kestra's scheduled tasks (Schedule triggers) use Java's ZoneId structure. This structure accepts the IANA Time Zone Database format for time zones (e.g., Europe/Istanbul, America/New_York).
+
+Using America/New_York automatically takes Daylight Saving Time into account.
+
+If you use UTC-5, your schedule will shift by 1 hour when it's Daylight Saving Time (UTC-4).
+
+Here's how it's used in the code:
+triggers:
+  - id: schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
+    timezone: "America/New_York" 
