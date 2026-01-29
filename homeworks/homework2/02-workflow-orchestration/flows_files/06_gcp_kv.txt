@@ -1,0 +1,48 @@
+id: 06_gcp_kv
+namespace: zoomcamp
+
+tasks:
+  - id: gcp_project_id
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_PROJECT_ID
+    kvType: STRING
+    value: awesome-icon-484918-n5 # 1. I entered the Project ID of my Google Cloud project here.
+
+  - id: gcp_location
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_LOCATION
+    kvType: STRING
+    value: us-central1 # 2. I received an error when I entered us-central1 as the region, but I later entered europe-west1, a safe and standard region.
+
+  - id: gcp_bucket_name
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_BUCKET_NAME
+    kvType: STRING
+    value: esila-de-zoomcamp-bucket-2026 # 3. I gave a name to create a Bucket called esila-de-zoomcamp-bucket-2026.
+
+  - id: gcp_dataset
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_DATASET
+    kvType: STRING
+    value: zoomcamp # 4. I named the dataset zoomcamp.
+    
+  # 5. I pasted the entire Service Account JSON file here to connect to GCP. I hid the JSON file key belonging to the Google Service as ***.
+  - id: gcp_creds
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_CREDS
+    kvType: JSON
+    value: 
+    {
+  "type": "service_account",
+  "project_id": "awesome-icon-484918-n5",
+  "private_key_id": "6a781276e4e7c88ff6b9acd7fdd5688bc16e75c0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\***\n",
+  "client_email": "terraform-runner@awesome-icon-484918-n5.iam.gserviceaccount.com",
+  "client_id": "105540066866406495014",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/terraform-runner%40awesome-icon-484918-n5.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
+
