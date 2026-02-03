@@ -212,11 +212,11 @@ In data engineering, there is no one-size-fits-all solution. While clustering is
 Why "False"?
 Here are some situations where clustering is unnecessary or impractical:
 
-Data Size: If your table is very small (typically under 1 GB), the performance increase from clustering is negligible. In fact, BigQuery's metadata management might slightly increase query times on small tables.
+1- Data Size: If your table is very small (typically under 1 GB), the performance increase from clustering is negligible. In fact, BigQuery's metadata management might slightly increase query times on small tables.
 
-uery Patterns: If you don't know beforehand how to filter or sort the data, clustering a random column offers no benefit.
+2 - Query Patterns: If you don't know beforehand how to filter or sort the data, clustering a random column offers no benefit.
 
-Cost/Write Performance: If data is constantly updated or new data is added very frequently (streaming), clustering will require constant reorganization in the background, creating an additional load on the system.
+3 - Cost/Write Performance: If data is constantly updated or new data is added very frequently (streaming), clustering will require constant reorganization in the background, creating an additional load on the system.
 
 Cevap: False
 
@@ -231,7 +231,5 @@ Estimated query size: 0 B
 
 Why? BigQuery maintains very detailed metadata in the background for each table. Basic information like the total number of rows in the table is readily available in this metadata. When we type SELECT count(*) (and don't use any WHERE filter), instead of counting millions of rows one by one, BigQuery reads that single number from the metadata file and returns it instantly.
 
-
-Q
 
 
