@@ -13,8 +13,15 @@ To prepare this assignment, I followed these steps:
 
 <img width="1778" height="979" alt="image" src="https://github.com/user-attachments/assets/2dc880b3-fe15-4724-b243-c7a56610a6b1" />
 
-4 - I right-clicked on 'models' under File Explorer and created a folder named 'dbt_prod_staging'. I created a folder named dbt_prod_staging by right-clicking on 'models' under File Explorer. I also created folders named dbt_prod_intermediate and dbt_prod_marts.
+4 - For the assignment, I created all the source files under taxi_rides_ny in the dbt Cloud environment, following the same folder and subfolder hierarchy.
+<img width="1194" height="579" alt="image" src="https://github.com/user-attachments/assets/34268583-b65a-44f2-bc4f-969dce7b54cc" />
+<img width="541" height="706" alt="image" src="https://github.com/user-attachments/assets/9769eb44-121a-48e9-b90b-a99f53f11505" />
+<img width="511" height="395" alt="image" src="https://github.com/user-attachments/assets/37e73bc6-eb1a-4e75-aa2e-afce8c8ff3f6" />
 
-<img width="357" height="298" alt="image" src="https://github.com/user-attachments/assets/9d9fb0e4-a5df-49ce-8162-fbec7f0826de" />
+5 - First, before running the `dbt build` or `dbt run` commands, I ran the `dbt clean` command in the dbt terminal to ensure the project was completely clean.
+<img width="730" height="534" alt="image" src="https://github.com/user-attachments/assets/70765c56-f81d-4cac-bf67-89a5ed88a346" />
 
-5 - 
+6 - To download and install the external packages (library, etc.) we want to use in our dbt project, I ran the `dbt deps` command.
+<img width="695" height="576" alt="image" src="https://github.com/user-attachments/assets/d241ba88-aeba-440b-b30d-cf37e18a64a8" />
+
+7 - 
