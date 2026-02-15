@@ -1,1 +1,33 @@
+Before starting the assignment for Week 5, although I had chosen dbt Cloud in the previous Week 4 assignment, since this assignment required the use of DuckDB, my first task was to install DuckDB locally, which I hadn't done last week.
+1 -  First, I ran the `pip install duckdb` command in the terminal to install the duckdb library.
+<img width="718" height="116" alt="image" src="https://github.com/user-attachments/assets/6ff7f24c-cdfd-4e05-89c9-a1c3859fa486" />
 
+2 - I ran the `pip install dbt-duckdb` command in the Terminal to install DBT's core framework and the DuckDB adapter for DBT.
+<img width="1408" height="720" alt="image" src="https://github.com/user-attachments/assets/d92599d2-1b03-43fd-9ad7-24948a64c013" />
+<img width="1710" height="961" alt="image" src="https://github.com/user-attachments/assets/efab2f01-16be-40c2-90ef-0be46ee26ec6" />
+<img width="1902" height="146" alt="image" src="https://github.com/user-attachments/assets/98be49de-6267-4922-8eb6-55c9bc7e1e45" />
+
+3 - To configure my dbt profile, I created a folder named .dbt under C:\Users\Esila Nur Demirci and placed the code content given in Step 3 into a file named profiles.yml.
+<img width="1350" height="239" alt="image" src="https://github.com/user-attachments/assets/134e40e8-f36a-4b04-bef3-528216d58798" />
+
+4 - I saved the given Ingest Data Python code as ingest_data.py under C:\05-Data-Platforms and ran it in the terminal with the command `python ingest_data.py`. This downloaded the yellow and green taxi travel parquet files for 2019 and 2020 from the data folder under C:\05-Data-Platforms.
+<img width="469" height="773" alt="image" src="https://github.com/user-attachments/assets/b549bbf7-c2a9-48f7-a8e6-f71a0d0ba70b" />
+<img width="1106" height="971" alt="image" src="https://github.com/user-attachments/assets/b4e4193d-27dc-4448-9ba0-c2fa98820840" />
+<img width="1067" height="963" alt="image" src="https://github.com/user-attachments/assets/19567c7b-48e0-4089-91af-94119e3d647a" />
+
+5 - I placed the generated taxi_rides_ny.duckdb file into the same folder as my dbt_project.yml file named taxi_rides_ny, and then ran the dbt debug command in the terminal under C:\05-Data-Platforms\taxi_rides_ny and observed that it worked successfully.
+
+<img width="876" height="564" alt="image" src="https://github.com/user-attachments/assets/61825630-b972-48b8-b84d-44c38298ca89" />
+
+6 - To download the macros and packages (like dbt_utils) for the project to my local computer, I ran the `dbt deps --target prod` command under C:\05-Data-Platforms\taxi_rides_ny and observed that it worked successfully.
+<img width="434" height="135" alt="image" src="https://github.com/user-attachments/assets/d8a12b46-48e0-4a1d-b9e3-c26c2d6f7ee9" />
+
+ 7 - To upload the CSV files from the project to DuckDB as a table, I ran the `dbt seed --target prod` command under C:\05-Data-Platforms\taxi_rides_ny.
+<img width="903" height="284" alt="image" src="https://github.com/user-attachments/assets/3e3ff591-3020-41ee-9837-d83e32f658ca" />
+
+8 - I ran the `dbt run --target prod` command under C:\05-Data-Platforms\taxi_rides_ny to start up all the SQL models (transformations of yellow and green taxi data) and create tables in DuckDB.
+ <img width="1897" height="509" alt="image" src="https://github.com/user-attachments/assets/c5138bca-b27a-4330-b535-963961213773" />
+
+9 - I observed that all tables were created under the production schema.
+
+<img width="1224" height="240" alt="image" src="https://github.com/user-attachments/assets/de671a6d-4b20-422b-bf41-05b3eb1a35c7" />
