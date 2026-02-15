@@ -1,4 +1,5 @@
-Before starting the assignment for Week 5, although I had chosen dbt Cloud in the previous Week 4 assignment, since this assignment required the use of DuckDB, my first task was to install DuckDB locally, which I hadn't done last week.
+Although I chose dbt Cloud for my Week 4 assignment, I worked on the DuckDB solution for this assignment and included my work here. I didn't go into the solutions to the problems; I only covered the part up to creating the tables.
+
 1 -  First, I ran the `pip install duckdb` command in the terminal to install the duckdb library.
 <img width="718" height="116" alt="image" src="https://github.com/user-attachments/assets/6ff7f24c-cdfd-4e05-89c9-a1c3859fa486" />
 
