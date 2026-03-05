@@ -98,4 +98,57 @@ df_join.groupBy("Zone") \
 
 <img width="487" height="756" alt="image" src="https://github.com/user-attachments/assets/e5170c33-ccfa-45c9-b399-52676239a2f9" />
 
-According to the table, there are 2 options with trips_count = 1: Arden Heights and Governor's Island. I selected Arden Heights as my answer.
+According to the table, there are 2 options with trips_count = 1: Arden Heights and Governor's Island. I selected Governor's Island as my answer.
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+I followed these steps to solve this much more cleanly and professionally with Spark SQL:
+
+1 - In Spark, we can use a DataFrame like an SQL table. To do this, we first create a temp view.
+
+I ran the following code to make the Taxi dataset an SQL table: `df.createOrReplaceTempView("trips")`
+
+I ran the `zones.createOrReplaceTempView("zones")` code to convert the Zone lookup dataset into an SQL table.
+
+Now I have two tables called trips and zones.
+
+<img width="322" height="98" alt="image" src="https://github.com/user-attachments/assets/29c0942e-98f4-4ef4-8af6-9d91a4ca7071" />
+
+
+2 -  Question 3 — To find the number of trips on November 15th using SQL, I ran the following query:
+
+spark.sql("""
+SELECT COUNT(*) as trip_count
+FROM trips
+WHERE DATE(tpep_pickup_datetime) = '2025-11-15'
+""").show()
+
+<img width="470" height="232" alt="image" src="https://github.com/user-attachments/assets/801a62f8-d462-46ec-8b59-c736ead9f55f" />
+
+3 - Question 4 — To find the longest trip value using SQL, I ran the following query code:
+
+spark.sql("""
+SELECT MAX(
+    (unix_timestamp(tpep_dropoff_datetime) - unix_timestamp(tpep_pickup_datetime))/3600
+) AS longest_trip_hours
+FROM trips
+""").show()
+
+<img width="713" height="246" alt="image" src="https://github.com/user-attachments/assets/fa045cfc-22b4-400b-b7f4-ea2007bf49e2" />
+
+4 - Question 6 — To find the least used zone value using SQL, I ran the following query:
+
+spark.sql("""
+SELECT z.Zone, COUNT(*) as trip_count
+FROM trips t
+JOIN zones z
+ON t.PULocationID = z.LocationID
+GROUP BY z.Zone
+ORDER BY trip_count
+LIMIT 1
+""").show()
+
+<img width="370" height="301" alt="image" src="https://github.com/user-attachments/assets/138cea13-5790-4651-8f25-872e330e3c0a" />
+
+
