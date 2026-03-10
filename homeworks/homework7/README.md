@@ -74,7 +74,7 @@ I listed the topics using the `rpk topic list` command:
 Question 3 :  To connect to Kafka using Python, I ran the command `pip install kafka-python`:
 <img width="1152" height="41" alt="image" src="https://github.com/user-attachments/assets/c6f4dab2-e3c0-4710-8ee3-4301d5470ccc" />
 
-I created a .py file named test_kafka and ran the given python test code for the Kafka connection using the command `python test_kafka.py`, and the result I saw was True.
+I created a .py file named test_kafka and ran the given python test code for the Kafka connection using the command `python test_kafka.py` and the result I saw was True.
 <img width="461" height="50" alt="image" src="https://github.com/user-attachments/assets/020af798-b5c4-4566-bd0b-735cbe298928" />
 
 Queston 4 :  The dataset I used for submitting taxi data is: Green Taxi 2019-10
@@ -88,19 +88,19 @@ Took: 58.29629850387573
 
 Question 5 : I copied the code from aggregation_job.py, created a file named session_job.py, and modified the code inside it as follows.
 
-To copy the script to Docker, I ran the following command: `docker cp session_job.py pyflink-jobmanager-1:/opt/flink/session_job.py`
-
-<img width="788" height="41" alt="image" src="https://github.com/user-attachments/assets/ae622d84-fd57-43b2-9331-bab2e6df98ac" />
+To copy the script to Docker, I ran the following command: `docker cp session_job.py pyflink-jobmanager-1:/opt/flink/session_job.py` 
+<img width="843" height="43" alt="image" src="https://github.com/user-attachments/assets/beabe9d9-98fa-47d4-9a20-449fa05d1316" />
 
 I ran the `docker exec -it pyflink-jobmanager-1 bash` command and I ran the command `flink run -py session_job.py` to submit the job to Flink.
-<img width="564" height="58" alt="image" src="https://github.com/user-attachments/assets/b8537ccf-1559-44be-85d0-5f9c31b404c8" />
+<img width="565" height="78" alt="image" src="https://github.com/user-attachments/assets/72b75d74-8e8d-42f9-8a57-bda503d18a69" />
 
 When I went to the Flink UI URL (http://localhost:8081), I observed that one job was running :
-<img width="1909" height="456" alt="image" src="https://github.com/user-attachments/assets/d00d23e6-c918-4021-80a6-196025c00c65" />
+<img width="1904" height="883" alt="image" src="https://github.com/user-attachments/assets/7388ff65-44a7-48b4-80d5-481a2e3531c3" />
 
-I accessed the Postgres database using the command `pgcli -h localhost -p 5432 -u postgres -d postgres`.
+I accessed the Postgres database using the command `pgcli -h localhost -p 5432 -u postgres -d postgres`. I entered 'postgres' as the password.
 
-<img width="745" height="146" alt="image" src="https://github.com/user-attachments/assets/4dc20ed6-406a-4aba-85b3-b1c08ff15e80" />
+With the following SQL query, I first deleted a table named processed_events_aggregated using `drop` and then recreated it: `CREATE TABLE processed_events_aggregated(PULocationID INTEGER, DOLocationID INTEGER, num_hits BIGINT, PRIMARY KEY (PULocationID,DOLocationID));`
+<img width="1395" height="139" alt="image" src="https://github.com/user-attachments/assets/b9c6c269-4106-46f3-8e9a-15718d906f67" />
 
 
 
