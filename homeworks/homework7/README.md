@@ -101,7 +101,9 @@ I accessed the Postgres database using the command `pgcli -h localhost -p 5432 -
 
 With the following SQL query, I first deleted a table named processed_events_aggregated using `drop` and then recreated it: `CREATE TABLE processed_events_aggregated(PULocationID INTEGER, DOLocationID INTEGER, num_hits BIGINT, PRIMARY KEY (PULocationID,DOLocationID));`
 <img width="1395" height="139" alt="image" src="https://github.com/user-attachments/assets/b9c6c269-4106-46f3-8e9a-15718d906f67" />
-
+I ran the following query to find which departure and arrival points had the longest uninterrupted taxi ride series : 
+`SELECT * FROM processed_events_aggregated ORDER BY num_hits DESC LIMIT 10;`
+<img width="877" height="273" alt="image" src="https://github.com/user-attachments/assets/0c19a59d-4930-417f-9501-a87d8e964a64" />
 
 
 
