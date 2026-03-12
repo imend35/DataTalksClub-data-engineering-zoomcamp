@@ -1,3 +1,4 @@
+
 I followed these steps for this assignment:
 
 1 - First, I opened the Docker Desktop application and observed that it was working. 
@@ -10,6 +11,12 @@ I followed these steps for this assignment:
  
  Then I ran the `docker compose up -d` command in the Terminal under 07-streaming/workshop/.
  <img width="641" height="140" alt="image" src="https://github.com/user-attachments/assets/af40c426-e7ea-4b76-916f-78c474aae5d9" />
+
+ I installed the kafka-python library by running the `pip install kafka-python` command so I could send and read data from Python to Kafka/Redpanda.
+ <img width="664" height="108" alt="image" src="https://github.com/user-attachments/assets/a0ff6ec4-c6a5-46c3-9dc7-7fb9bb3c15c2" />
+
+I ran the `pip show kafka-python` command to check the kafka-python library installation.
+ <img width="800" height="189" alt="image" src="https://github.com/user-attachments/assets/cc8596c3-ddfc-48d2-b113-4c155a529245" />
 
 Question 1. Redpanda version :  To solve the Redpanda version question, I ran the command `docker exec -it workshop-redpanda-1 rpk version`.
 
@@ -35,97 +42,92 @@ Therefore, the answer to Question 2 is: → 10 seconds
 
  Answer : 8506 km
 
-
- 
- 3 - I accessed the Apache Flink Database by going to the URL address http://localhost:8081.
- <img width="1913" height="972" alt="image" src="https://github.com/user-attachments/assets/c576c688-4e87-47ac-a52a-f42f0cf52d4a" />
-
- 4 - I installed the pgcli library using the command `pip install pgcli`.
+Question 4. Tumbling window - pickup location  : To solve this problem, first I installed the pgcli library using the command `pip install pgcli`.
 <img width="1488" height="780" alt="image" src="https://github.com/user-attachments/assets/c28f4f96-55fc-4e83-888c-e2b05f92a805" />
 
- 5-  I installed the kafka-python library by running the `pip install kafka-python` command so I could send and read data from Python to Kafka/Redpanda.
- <img width="664" height="108" alt="image" src="https://github.com/user-attachments/assets/a0ff6ec4-c6a5-46c3-9dc7-7fb9bb3c15c2" />
+Then I ran the command `pgcli -h localhost -p 5432 -u postgres -d postgres` in the terminal to connect to PostgreSQL, and entered 'postgres' as the password.
+ <img width="718" height="134" alt="image" src="https://github.com/user-attachments/assets/93671cec-14cc-45fb-bc68-60d0ad1aca31" />
 
- 6 - I ran the `pip show kafka-python` command to check the kafka-python library installation.
- <img width="800" height="189" alt="image" src="https://github.com/user-attachments/assets/cc8596c3-ddfc-48d2-b113-4c155a529245" />
+First, I ran the SELECT version(); command to check the PostgreSQL version.
+<img width="952" height="134" alt="image" src="https://github.com/user-attachments/assets/b9d5da63-9495-4210-840c-adcc13fc5e1f" />
 
-7 - I ran the command `pgcli -h localhost -p 5432 -u postgres -d postgres` to connect to the PostgreSQL database and executed the `Select 1;` query for verification purposes.
-<img width="964" height="271" alt="image" src="https://github.com/user-attachments/assets/b58b4889-91da-421c-b762-115fcd3416eb" />
+I used the `\dt` command to list the tables if they existed, and I saw that there were no tables.
+<img width="289" height="111" alt="image" src="https://github.com/user-attachments/assets/898ff6e0-ad55-4b2d-891f-83d79aee4a51" />
 
-8 - I created the processed_events and processed_events_aggregated tables by running the following SQL codes: 
+I created a table named q4_tumbling with the following SQL command:
 
-CREATE TABLE processed_events (
-    test_data INTEGER,
-    event_timestamp TIMESTAMP
+CREATE TABLE q4_tumbling (
+    window_start TIMESTAMP,
+    PULocationID INTEGER,
+    num_trips BIGINT,
+    PRIMARY KEY (window_start, PULocationID)
 );
 
-CREATE TABLE processed_events_aggregated (
-    event_hour TIMESTAMP,
-    test_data INTEGER,
-    num_hits INTEGER 
+<img width="1298" height="69" alt="image" src="https://github.com/user-attachments/assets/9ec53343-873a-4f03-be77-74e04bf00a34" />
+
+I created a job Python file named q4_tumbling_pickup.py under the workshop/src/job folder. I placed the code in a Github folder.
+
+I submitted the job to Flink by running the command `docker exec -it workshop-jobmanager-1 flink run -py /opt/src/job/q4_tumbling_pickup.py`.
+
+<img width="904" height="37" alt="image" src="https://github.com/user-attachments/assets/18762d43-208c-4e51-8381-b11e612f42af" />
+
+ I accessed the Apache Flink Database by going to the URL address http://localhost:8081.
+
+ <img width="1866" height="967" alt="image" src="https://github.com/user-attachments/assets/32d954e8-1913-40fd-a67a-2a39bd3136f1" />
+
+I reconnected to PostgreSQL using the command `pgcli -h localhost -p 5432 -u postgres -d postgres` and checked the following query.
+SELECT PULocationID, num_trips
+FROM q4_tumbling
+ORDER BY num_trips DESC
+LIMIT 3;
+
+
+<img width="879" height="177" alt="image" src="https://github.com/user-attachments/assets/829cbdd8-4247-4710-af77-56aaab228568" />
+
+Correct answer: → 74
+
+Question 5. Session window - longest streak : To solve this problem, I created a table named q5 session in PostgreSQL using the following SQL code:
+CREATE TABLE q5_session (
+    PULocationID INTEGER,
+    num_trips BIGINT,
+    PRIMARY KEY (PULocationID)
 );
-I displayed the created tables by listing them using the `\dt` command.
 
-<img width="1144" height="268" alt="image" src="https://github.com/user-attachments/assets/3d24e8ff-066f-4df9-8abe-49c4dd1cb2a4" />
+<img width="1029" height="215" alt="image" src="https://github.com/user-attachments/assets/812c0940-5e7e-43fd-9e8d-0b3469b6b967" />
 
-Question 1: Redpanda version : To find the Redpanda version : 
+I created a job file named q5_session_window.py under the workshop/src/job folder. I shared the code on GitHub.
 
-1 - I ran the `docker ps` command to check the container list.
-<img width="1898" height="185" alt="image" src="https://github.com/user-attachments/assets/ef8dc4c2-3ab1-40c0-b5dd-89cb861d2427" />
+I submitted the job to Flink using the command: `docker exec -it workshop-jobmanager-1 flink run -py /opt/src/job/q5_session_window.py`
 
-2 - I ran the `docker exec -it redpanda-1 bash` command to enter the container named `pyflink-redpanda-1`.
+<img width="915" height="46" alt="image" src="https://github.com/user-attachments/assets/5000d322-0b9c-4248-8636-08ba7848da4e" />
 
-<img width="553" height="53" alt="image" src="https://github.com/user-attachments/assets/c34d1b1f-e44d-4bbb-8f80-2edb40509a03" />
+I saw that both jobs were displayed on the Flink Web Dashboard screen.
 
-3 - After entering the container, I used the `rpk version` command and saw that the RPK version was v25.3.9.
+<img width="1907" height="500" alt="image" src="https://github.com/user-attachments/assets/da3d25bd-4b3d-4b5f-a5bb-be9d18c730fb" />
 
- <img width="554" height="180" alt="image" src="https://github.com/user-attachments/assets/899695e7-14c0-4e78-b49a-1a13c69b0f66" />
+I ran the query `SELECT * FROM q5_session ORDER BY num_trips DESC LIMIT 10;` in PostgreSQL and tried to find the answer to the question: How many trips were made in the longest session?
 
-Answer 1 : v25.3.9.
+<img width="751" height="292" alt="image" src="https://github.com/user-attachments/assets/7d6fe1b0-b34b-453d-bc25-44f09cc9e068" />
 
-Question 2 : I ran the `rpk topic create green-trips` command to create a topic named `green-trips`:
-<img width="527" height="72" alt="image" src="https://github.com/user-attachments/assets/159d7eaf-0755-4f4b-8ee6-dffa0b747c32" />
+Since the closest value is 31, Answer → 31
 
-I listed the topics using the `rpk topic list` command:
-<img width="359" height="63" alt="image" src="https://github.com/user-attachments/assets/1ae16b69-4762-4d98-b267-6114da9f9066" />
+Question 6. Tumbling window - largest tip : To answer the question "Which hour had the highest total tip amount?", I created a table named q6_hourly_tip using the following SQL:
 
-Question 3 :  To connect to Kafka using Python, I ran the command `pip install kafka-python`:
-<img width="1152" height="41" alt="image" src="https://github.com/user-attachments/assets/c6f4dab2-e3c0-4710-8ee3-4301d5470ccc" />
+CREATE TABLE q6_hourly_tip (
+window_start TIMESTAMP,
+total_tip DOUBLE PRECISION,
+PRIMARY KEY (window_start)
+);
 
-I created a .py file named test_kafka and ran the given python test code for the Kafka connection using the command `python test_kafka.py` and the result I saw was True.
-<img width="461" height="50" alt="image" src="https://github.com/user-attachments/assets/020af798-b5c4-4566-bd0b-735cbe298928" />
+I created a Python job file named q6_hourly_tip.py under the workshop/src/job folder. I shared the code on GitHub.
 
-Queston 4 :  The dataset I used for submitting taxi data is: Green Taxi 2019-10
+I ran the command `docker exec -it workshop-jobmanager-1 flink run -py /opt/src/job/q6_hourly_tip.py` and submitted the job to Flink.
 
-I created a Python file named send_trips.py, wrote the following code inside it, saved it, and ran it with the `python send_trips.py` command.
+<img width="868" height="45" alt="image" src="https://github.com/user-attachments/assets/c5ea4b45-6224-4729-9cde-9af72327b8bd" />
 
-<img width="403" height="62" alt="image" src="https://github.com/user-attachments/assets/8f7247e8-f1dd-428f-b766-a037403aa603" />
+I ran the query SELECT * FROM q6_hourly_tip ORDER BY total_tip DESC LIMIT 10; in PostgreSQL and found the answer to the question "Which hour had the highest total tip amount?" as 2025-10-16 18:00:00.
 
-Rows: 476386
-Took: 58.29629850387573
+ <img width="731" height="291" alt="image" src="https://github.com/user-attachments/assets/f8251093-b246-48e0-aefc-f7a5d2f2cc2f" />
 
-Question 5 : I copied the code from aggregation_job.py, created a file named session_job.py, and modified the code inside it as follows.
-
-To copy the script to Docker, I ran the following command: `docker cp session_job.py pyflink-jobmanager-1:/opt/flink/session_job.py` 
-<img width="843" height="43" alt="image" src="https://github.com/user-attachments/assets/beabe9d9-98fa-47d4-9a20-449fa05d1316" />
-
-I ran the `docker exec -it pyflink-jobmanager-1 bash` command and I ran the command `flink run -py session_job.py` to submit the job to Flink.
-<img width="565" height="78" alt="image" src="https://github.com/user-attachments/assets/72b75d74-8e8d-42f9-8a57-bda503d18a69" />
-
-When I went to the Flink UI URL (http://localhost:8081), I observed that one job was running :
-<img width="1904" height="883" alt="image" src="https://github.com/user-attachments/assets/7388ff65-44a7-48b4-80d5-481a2e3531c3" />
-
-I accessed the Postgres database using the command `pgcli -h localhost -p 5432 -u postgres -d postgres`. I entered 'postgres' as the password.
-
-With the following SQL query, I first deleted a table named processed_events_aggregated using `drop` and then recreated it: `CREATE TABLE processed_events_aggregated(PULocationID INTEGER, DOLocationID INTEGER, num_hits BIGINT, PRIMARY KEY (PULocationID,DOLocationID));`
-<img width="1395" height="139" alt="image" src="https://github.com/user-attachments/assets/b9c6c269-4106-46f3-8e9a-15718d906f67" />
-I ran the following query to find which departure and arrival points had the longest uninterrupted taxi ride series : 
-`SELECT * FROM processed_events_aggregated ORDER BY num_hits DESC LIMIT 10;`
-<img width="877" height="273" alt="image" src="https://github.com/user-attachments/assets/0c19a59d-4930-417f-9501-a87d8e964a64" />
-
-
-
-
-
-
+Answer : 2025-10-16 18:00:00
 
