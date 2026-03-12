@@ -4,21 +4,39 @@ I followed these steps for this assignment:
 
 <img width="245" height="713" alt="image" src="https://github.com/user-attachments/assets/911ea381-cf6b-45ad-9ee7-731269714c10" />
 
-2 - I copied the defined docker-compose.yaml file to the 07-streaming folder under the C drive, and then to the pyflink folder under that, and ran the `docker-compose up -d` command in the Terminal under 07-streaming/pyflink/.
-<img width="1226" height="634" alt="image" src="https://github.com/user-attachments/assets/1f2a988f-94b5-486e-b5ed-3b0dee1f50fd" />
-<img width="1247" height="912" alt="image" src="https://github.com/user-attachments/assets/43ce3612-8623-44a5-b85a-d3699ec02b46" />
-<img width="1206" height="904" alt="image" src="https://github.com/user-attachments/assets/a381023f-8510-4d25-9cff-6b2264ebc051" />
-<img width="1274" height="950" alt="image" src="https://github.com/user-attachments/assets/23153479-664f-4276-a2aa-a4d32408ac7a" />
-<img width="1296" height="721" alt="image" src="https://github.com/user-attachments/assets/97c61d90-317f-486e-a199-8f74994da98a" />
-<img width="1197" height="602" alt="image" src="https://github.com/user-attachments/assets/2d8cc08a-90fe-4e1a-9c56-22bc364afb62" />
-<img width="671" height="933" alt="image" src="https://github.com/user-attachments/assets/3513c1c4-93b8-4d0d-bf90-a30e658b663d" />
-<img width="1894" height="991" alt="image" src="https://github.com/user-attachments/assets/d0f41706-45bb-4b7a-9f7f-36b775768019" />
-<img width="759" height="980" alt="image" src="https://github.com/user-attachments/assets/3a9d801c-6716-49cb-9ce0-3bfd057c4566" />
-<img width="744" height="964" alt="image" src="https://github.com/user-attachments/assets/359da38e-0ada-4640-aa52-41baa449a6d5" />
-<img width="1477" height="871" alt="image" src="https://github.com/user-attachments/assets/b6d6592d-3887-4c00-8f3b-12401c4249b9" />
-<img width="1450" height="843" alt="image" src="https://github.com/user-attachments/assets/1eae2044-55e0-4a6a-81c9-83b5bab9a99b" />
-<img width="983" height="486" alt="image" src="https://github.com/user-attachments/assets/9a8e7777-b9ce-4f9d-b7f2-c720590d5f97" />
+2 - I copied the defined docker-compose.yaml file to the 07-streaming folder under the C drive, and then to the workshop folder under that, and ran the `docker compose build` command in the Terminal under 07-streaming/workshop/.
+<img width="1899" height="962" alt="image" src="https://github.com/user-attachments/assets/eff3ce36-1182-4fb6-9ac1-033dbf1a8c17" />
+<img width="984" height="401" alt="image" src="https://github.com/user-attachments/assets/0965d5e5-5457-4a1d-a371-9ae2d41e0963" />
+ 
+ Then I ran the `docker compose up -d` command in the Terminal under 07-streaming/workshop/.
+ <img width="641" height="140" alt="image" src="https://github.com/user-attachments/assets/af40c426-e7ea-4b76-916f-78c474aae5d9" />
 
+Question 1. Redpanda version :  To solve the Redpanda version question, I ran the command `docker exec -it workshop-redpanda-1 rpk version`.
+
+<img width="751" height="152" alt="image" src="https://github.com/user-attachments/assets/1c23f798-fcce-4c8a-a88b-86a30152a07a" />
+
+ Question 2. Sending data to Redpanda :  I ran the command `docker exec -it workshop-redpanda-1 rpk topic create green-trips` to create a topic named `green-trips`.
+ 
+ <img width="776" height="57" alt="image" src="https://github.com/user-attachments/assets/5608cbb6-7cd2-4930-ac8c-968cc5c10d77" />
+
+ To check the topic we created, I ran the command: `docker exec -it workshop-redpanda-1 rpk topic list`.
+ 
+ <img width="649" height="61" alt="image" src="https://github.com/user-attachments/assets/04d97db7-4476-4c4f-bc0b-214b1c2a670f" />
+
+ I created a file named green_producer.py under 07-streaming/workshop/src/producers.
+ <img width="540" height="53" alt="image" src="https://github.com/user-attachments/assets/5092969f-fffa-44cd-bd76-57f450c7226b" />
+ My measurement is 6.24 seconds, so the closest option is: 10 seconds
+
+Therefore, the answer to Question 2 is: → 10 seconds
+
+ Question 3. Consumer - trip distance : To solve this problem, I created a Python file named green_consumer.py under the workshop folder and shared the code on GitHub. Then, I ran it in the terminal using the command `python green_consumer.py` under the workshop folder. As a result, I found 8506 km. 
+
+ <img width="461" height="38" alt="image" src="https://github.com/user-attachments/assets/4b958a8d-ee94-4e16-b57f-82472fe1821b" />
+
+ Answer : 8506 km
+
+
+ 
  3 - I accessed the Apache Flink Database by going to the URL address http://localhost:8081.
  <img width="1913" height="972" alt="image" src="https://github.com/user-attachments/assets/c576c688-4e87-47ac-a52a-f42f0cf52d4a" />
 
