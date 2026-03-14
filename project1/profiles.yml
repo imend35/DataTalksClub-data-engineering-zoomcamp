@@ -1,0 +1,12 @@
+ai_repo_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: braided-keel-490209-q8
+      dataset: ai_open_source_dw
+      threads: 1
+      keyfile: C:\Terraform\ai-open-source-intelligence-platform\terraform\braided-keel-490209-q8-0f894515294d.json
+      timeout_seconds: 300
+      location: US
