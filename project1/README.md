@@ -303,23 +303,33 @@ After identifying AI-related repositories, the resulting dataset was stored in t
 CREATE OR REPLACE TABLE
 `braided-keel-490209-q8.ai_open_source_dw.ai_repositories` AS
 
+WITH ai_repos AS (
 SELECT
 DISTINCT
   repo_name,
   case 
 when REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') then 'ML'
 when REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') then 'DL'
-when REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') then 'AI'
+when REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') then 'AI'
 when REGEXP_CONTAINS(LOWER(path), r'\bllm\b') then 'LLM'
-when REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') then 'AI'
-else 'None' end AS Subject
+else 'None' end AS subject
 FROM `bigquery-public-data.github_repos.files`
 WHERE
 REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
 OR REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b')
 OR REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b')
 OR REGEXP_CONTAINS(LOWER(path), r'\bllm\b')
-OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$');
+OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$')
+)
+
+SELECT
+a.*,
+lang.name AS language
+FROM
+`bigquery-public-data.github_repos.languages` l,
+UNNEST(language) AS lang
+JOIN ai_repos a
+ON LOWER(l.repo_name) = LOWER(a.repo_name);
 ```
 To enable scalable storage and downstream processing, this table was exported to a **GCS bucket** in **Parquet format**, which provides efficient columnar storage and is well-suited for analytical workloads.
 
@@ -338,7 +348,7 @@ Export configuration:
 The resulting file was stored in the data lake under the following path:
 
 ```
-gs://ai-open-source-lake/ai_repositories/ai_repositories.parquet
+gs://ai-open-source-lake/ai_repositories.parquet
 ```
 
 <img src="images/gcs_ai_repository_parquet.png" width="700">
