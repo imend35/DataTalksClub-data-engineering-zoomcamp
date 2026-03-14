@@ -551,8 +551,12 @@ The Power BI dashboard includes the following visual components:
 
 <img src="images/sum_of_repo_count_by_languages.png" width="700">
 
+<img src="images/sum_of_repo_count_by_language2.png" width="700">
+
 * AI Type Distribution – Visualizes the distribution of AI project topics and subject areas, helping to understand which AI domains (e.g., machine learning, deep learning, computer vision) are most actively developed in the open-source community.
 
 <img src="images/sum_of_repo_count_by_ai_types.png" width="700">
+
+<img src="images/sum_of_repo_count_by_ai_type2.png" width="700">
 
 By combining the data engineering pipeline (Terraform, GCS, BigQuery, dbt) with a visual analytics layer in Power BI, this step transforms the processed data into an interactive decision-support dashboard that enables exploration of trends within the global AI development landscape.
