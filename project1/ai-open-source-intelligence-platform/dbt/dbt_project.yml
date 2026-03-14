@@ -1,0 +1,9 @@
+name: "ai_repo_dbt"
+version: "1.0"
+profile: "ai_repo_dbt"
+
+model-paths: ["models"]
+
+models:
+  ai_repo_dbt:
+    +materialized: table
