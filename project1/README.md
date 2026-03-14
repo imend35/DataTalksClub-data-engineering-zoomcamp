@@ -329,7 +329,7 @@ FROM
 `bigquery-public-data.github_repos.languages` l,
 UNNEST(language) AS lang
 JOIN ai_repos a
-ON LOWER(l.repo_name) = LOWER(a.repo_name);
+ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
 ```
 To enable scalable storage and downstream processing, this table was exported to a **GCS bucket** in **Parquet format**, which provides efficient columnar storage and is well-suited for analytical workloads.
 
