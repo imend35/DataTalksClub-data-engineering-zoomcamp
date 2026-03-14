@@ -41,7 +41,7 @@ Next, I initialized the Terraform working directory to download the required pro
 terraform init
 ```
 
-📸 *[Screenshot – Terraform initialization in terminal]*
+<img src="images/terraform-init.png" width="700">
 
 After initialization, I executed a Terraform plan to preview the infrastructure resources that would be created.
 
@@ -49,7 +49,7 @@ After initialization, I executed a Terraform plan to preview the infrastructure 
 terraform plan
 ```
 
-📸 *[Screenshot – Terraform plan output]*
+<img src="images/terraform-plan.png" width="700">
 
 Once the configuration was verified, I applied the Terraform configuration to provision the infrastructure in Google Cloud.
 
@@ -57,15 +57,15 @@ Once the configuration was verified, I applied the Terraform configuration to pr
 terraform apply
 ```
 
-📸 *[Screenshot – Terraform apply execution]*
+<img src="images/terraform-apply.png" width="700">
 
 Through this process, I automatically created the following infrastructure components:
 
 * A **Google Cloud Storage (GCS) bucket** to serve as the **Data Lake layer** for storing raw repository data.
 * A **BigQuery dataset** to act as the **Data Warehouse layer** for storing structured and transformed analytical tables.
 
-📸 *[Screenshot – Created GCS bucket in Google Cloud Console]*
-📸 *[Screenshot – BigQuery dataset created]*
+<img src="images/ai-open-source-dw.png" width="700">
+<img src="images/ai-open-source-lake.png" width="700">
 
 By using Terraform, the infrastructure setup becomes **fully reproducible and version-controlled**, ensuring that the entire cloud environment can be recreated consistently across different environments.
 
