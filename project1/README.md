@@ -341,7 +341,7 @@ Export configuration:
 * File format: **Parquet**
 * Compression: **Snappy**
 
-📸 **BigQuery Table Export**
+ **BigQuery Table Export**
 
 <img src="images/export_to_gcs.png" width="700">
 
@@ -355,7 +355,7 @@ gs://ai-open-source-lake/ai_repositories.parquet
 
 ---
 
-** Step 6 — Data Transformation Pipeline with dbt**
+## Step 6 — Data Transformation Pipeline with dbt
 
 After loading the filtered AI repository dataset into **BigQuery**, I implemented a transformation layer using **dbt (Data Build Tool)** to build a modular analytics pipeline.
 
@@ -418,6 +418,7 @@ braided-keel-490209-q8
    └── ai_open_source_dw
         ├── stg_ai_repositories
         └── ai_repo_languages
+        └── ai_repo_ai_type.sql
 ```
 
 Pipeline flow:
@@ -456,7 +457,7 @@ dbt run
 
 ---
 
-# 🖼 dbt Execution Screenshots
+# dbt Execution Screenshots
 
 ### dbt Debug Result
 
@@ -534,3 +535,24 @@ This step successfully introduced an **Analytics Engineering layer** into the pr
 
 The raw AI repository dataset is now transformed into structured analytical tables that enable exploration of the AI ecosystem by programming language.
 
+## Step 7 — Data Visualization with Power BI
+
+In the final stage of the project, I developed an interactive analytics dashboard using Power BI to visualize the insights derived from the data pipeline.
+
+The dashboard connects directly to the analytical tables stored in BigQuery, which were generated through the dbt transformation layer. By integrating Power BI with the data warehouse, I was able to build a visual exploration layer that enables intuitive analysis of the global open-source AI ecosystem.
+
+The dashboard provides a high-level overview of trends in AI-related open-source repositories and allows users to quickly identify patterns across different dimensions of the dataset.
+
+Key Visualizations
+
+The Power BI dashboard includes the following visual components:
+
+* Programming Language Distribution – Highlights the most commonly used programming languages in AI-related repositories, providing insight into the dominant technologies within the AI ecosystem.
+
+<img src="images/sum_of_repo_count_by_languages.png" width="700">
+
+* AI Type Distribution – Visualizes the distribution of AI project topics and subject areas, helping to understand which AI domains (e.g., machine learning, deep learning, computer vision) are most actively developed in the open-source community.
+
+<img src="images/sum_of_repo_count_by_ai_types.png" width="700">
+
+By combining the data engineering pipeline (Terraform, GCS, BigQuery, dbt) with a visual analytics layer in Power BI, this step transforms the processed data into an interactive decision-support dashboard that enables exploration of trends within the global AI development landscape.
