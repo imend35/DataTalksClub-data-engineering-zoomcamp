@@ -341,9 +341,186 @@ The resulting file was stored in the data lake under the following path:
 gs://ai-open-source-lake/ai_repositories/ai_repositories.parquet
 ```
 
-📸 **GCS Data Lake Storage**
-
 <img src="images/gcs_ai_repository_parquet.png" width="700">
 
-Using Parquet ensures efficient storage and faster analytical queries when the data is later re-ingested into the warehouse layer for transformations and dashboard analytics.
+---
+
+** Step 6 — Data Transformation Pipeline with dbt**
+
+After loading the filtered AI repository dataset into **BigQuery**, I implemented a transformation layer using **dbt (Data Build Tool)** to build a modular analytics pipeline.
+
+The goal of this step was to transform the raw repository data into structured analytical tables that can be used for exploration and downstream analytics.
+
+dbt allows defining transformation logic as modular SQL models with version control and dependency management.
+
+---
+
+#  Transformation Pipeline
+
+The dbt pipeline performs the following transformations:
+
+### 1 Read Raw Repository Data
+
+The raw AI repository dataset is stored in **BigQuery** after the ingestion pipeline.
+
+dbt reads the raw table and prepares it for transformation.
+
+---
+
+### 2 Staging Layer
+
+A staging model was created to standardize the repository dataset.
+
+Model:
+
+```
+stg_ai_repositories
+```
+
+Purpose:
+
+* Normalize raw repository fields
+* Prepare clean data for analytics models
+* Create a consistent staging layer
+
+---
+
+### 3 Analytics Layer
+
+An analytics model aggregates repositories by programming language.
+
+Model:
+
+```
+ai_repo_languages
+```
+
+This model produces an analytical table that shows the distribution of AI repositories by programming language.
+
+---
+
+#  Resulting BigQuery Tables
+
+After running dbt, the following tables are created in the data warehouse:
+
+```
+braided-keel-490209-q8
+   └── ai_open_source_dw
+        ├── stg_ai_repositories
+        └── ai_repo_languages
+```
+
+Pipeline flow:
+
+```
+Raw Data → Staging Model → Analytics Model
+```
+
+---
+
+# Why dbt?
+
+Using **dbt** provides several advantages:
+
+* Version-controlled SQL transformations
+* Modular data models
+* Dependency-aware pipelines
+* Reproducible analytics workflows
+
+This transformation layer turns the raw repository dataset into **structured analytics-ready tables inside BigQuery**.
+
+---
+
+# Running the dbt Pipeline
+
+The dbt models are executed using:
+
+```bash
+dbt debug
+dbt run
+```
+
+`dbt debug` verifies the connection to BigQuery.
+
+`dbt run` executes the transformation models and materializes them as tables inside the warehouse.
+
+---
+
+# 🖼 dbt Execution Screenshots
+
+### dbt Debug Result
+
+<img src="images/dbt-debug.png" width="700">
+
+---
+
+### dbt Run Result
+
+<img src="images/dbt-run.png" width="700">
+---
+
+#  Final Project Structure
+
+Here is the final structure of the project after implementing the dbt transformation layer:
+
+```
+ai-open-source-intelligence-platform
+│
+├── terraform
+│   ├── main.tf
+│   ├── variables.tf
+│   └── outputs.tf
+│
+├── ingestion
+│   └── extract_ai_repositories.py
+│
+├── dbt
+│   ├── dbt_project.yml
+│   ├── models
+│   │
+│   │   ├── staging
+│   │   │   └── stg_ai_repositories.sql
+│   │   │
+│   │   └── marts
+│   │       └── ai_repo_languages.sql
+│
+├── images
+│   ├── dbt_debug.png
+│   └── dbt_run.png
+│
+└── README.md
+```
+
+---
+
+#  Final Data Architecture
+
+The complete data pipeline now looks like this:
+
+```
+GitHub AI Repositories
+        │
+        ▼
+Python Extraction
+        │
+        ▼
+Google Cloud Storage (Raw Data)
+        │
+        ▼
+BigQuery Data Warehouse
+        │
+        ▼
+dbt Transformation Layer
+        │
+        ▼
+Analytics Tables
+```
+
+---
+
+# Outcome
+
+This step successfully introduced an **Analytics Engineering layer** into the project using dbt.
+
+The raw AI repository dataset is now transformed into structured analytical tables that enable exploration of the AI ecosystem by programming language.
 
