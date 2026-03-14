@@ -1,0 +1,16 @@
+version: 2
+
+models:
+  - name: ai_repo_languages
+    description: "AI repositories aggregated by programming language"
+    columns:
+      - name: language
+        description: "Programming language"
+
+  - name: ai_repo_ai_type
+    description: "AI repositories aggregated by AI Type"
+    columns:
+      - name: subject
+        description: "AI Type"
+      - name: repo_count
+        description: "Number of repositories"
