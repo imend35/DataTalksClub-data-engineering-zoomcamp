@@ -69,4 +69,31 @@ Through this process, I automatically created the following infrastructure compo
 
 By using Terraform, the infrastructure setup becomes **fully reproducible and version-controlled**, ensuring that the entire cloud environment can be recreated consistently across different environments.
 
-           
+### Step 3 — Data Exploration in BigQuery
+
+In this step, I explored the **GitHub Repositories public dataset** available in BigQuery in order to understand its structure and identify the relevant tables required for the analysis.
+
+The dataset used in this project is:
+
+```
+bigquery-public-data.github_repos
+```
+
+I examined several key tables including:
+
+* `languages`
+* `commits`
+* `contents`
+
+The **languages** table was used to analyze the distribution of programming languages across repositories, while the **commits** table provided insights into repository activity over time.
+
+<img src="images/languages.png" width="700">
+<img src="images/languages1.png" width="700">
+<img src="images/languages2.png" width="700">
+<img src="images/languages3.png" width="700">
+<img src="images/languages4.png" width="700">
+
+The **contents** table was particularly important for identifying repositories related to Artificial Intelligence. By searching for keywords such as *machine learning*, *deep learning*, *LLM*, and *artificial intelligence*, I was able to detect repositories associated with AI development.
+
+This exploration step helped define the filtering logic used later in the data pipeline to extract AI-related repositories for further analysis.
+
