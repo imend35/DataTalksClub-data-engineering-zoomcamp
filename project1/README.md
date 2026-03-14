@@ -493,7 +493,7 @@ ai-open-source-intelligence-platform
 │   │   │
 │   │   └── marts
 │   │       └── ai_repo_languages.sql
-│
+│           └── ai_repo_ai_type.sql
 ├── images
 │   ├── dbt_debug.png
 │   └── dbt_run.png
