@@ -122,6 +122,24 @@ This exploration phase helped me determine how to **identify Artificial Intellig
 
 ---
 
+## Step 4 — Identifying AI-Related Repositories
+
+In this step, I focused on identifying repositories related to **Artificial Intelligence technologies** in order to narrow the scope of the analysis.
+
+Since the GitHub public dataset contains millions of repositories across many domains, it was necessary to apply a filtering strategy to isolate projects specifically associated with AI development.
+
+To achieve this, I analyzed the repository file paths stored in the **`files`** table and searched for keywords commonly associated with AI-related technologies. The filtering logic was implemented using regular expressions to improve accuracy and reduce false positives.
+
+The following keyword categories were used to detect AI-related repositories:
+
+* **Machine Learning**
+* **Deep Learning**
+* **Large Language Models (LLMs)**
+* **Artificial Intelligence**
+
+The filtering process also limited results to source code file types commonly used in data science and machine learning projects, such as Python and Jupyter Notebook files.
+
+
 ## Programming Language Distribution Across GitHub
 
 To understand which programming languages are most commonly used across repositories, I queried the **languages** table.
@@ -272,3 +290,60 @@ Through this exploration process, I was able to:
 * Identify the most relevant tables for the analysis
 * Define a filtering strategy for detecting AI-related repositories
 * Prepare the transformation logic used later in the data pipeline
+
+  ## Step 5 — Data Lake Layer (GCS)
+
+In this step, I exported the filtered AI repository dataset from BigQuery to **Google Cloud Storage (GCS)** to establish the Data Lake layer of the pipeline.
+
+After identifying AI-related repositories, the resulting dataset was stored in the data warehouse as the table:
+
+`ai_open_source_dw.ai_repositories`
+
+```sql
+CREATE OR REPLACE TABLE
+`braided-keel-490209-q8.ai_open_source_dw.ai_repositories` AS
+
+SELECT
+DISTINCT
+  repo_name,
+  case 
+when REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') then 'ML'
+when REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') then 'DL'
+when REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') then 'AI'
+when REGEXP_CONTAINS(LOWER(path), r'\bllm\b') then 'LLM'
+when REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') then 'AI'
+else 'None' end AS Subject
+FROM `bigquery-public-data.github_repos.files`
+WHERE
+REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\bllm\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$');
+```
+To enable scalable storage and downstream processing, this table was exported to a **GCS bucket** in **Parquet format**, which provides efficient columnar storage and is well-suited for analytical workloads.
+
+The export was performed directly from the BigQuery interface using the **Export to GCS** functionality.
+
+Export configuration:
+
+* Destination bucket: `ai-open-source-lake`
+* File format: **Parquet**
+* Compression: **Snappy**
+
+📸 **BigQuery Table Export**
+
+<img src="images/export_to_gcs.png" width="700">
+
+The resulting file was stored in the data lake under the following path:
+
+```
+gs://ai-open-source-lake/ai_repositories/ai_repositories.parquet
+```
+
+📸 **GCS Data Lake Storage**
+
+<img src="images/gcs_ai_repository_parquet.png" width="700">
+
+Using Parquet ensures efficient storage and faster analytical queries when the data is later re-ingested into the warehouse layer for transformations and dashboard analytics.
+
