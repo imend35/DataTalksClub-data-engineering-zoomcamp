@@ -14,3 +14,5 @@ The following services were activated:
 To allow the pipeline components to securely interact with Google Cloud services, I created a **service account** and assigned the necessary roles, including BigQuery and Cloud Storage administrative permissions.
 
 This initial setup established the cloud foundation required for building and running the end-to-end data pipeline.
+
+           
