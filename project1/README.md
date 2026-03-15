@@ -1,3 +1,47 @@
+# Global AI Open-Source Intelligence Platform : A Global Data Engineering Pipeline
+
+### Mapping the Evolution of Artificial Intelligence Across the World
+
+**Author:**
+Esila Nur Demirci
+
+
+## Problem Statement
+
+The open-source ecosystem has become one of the most important drivers of innovation in Artificial Intelligence. Thousands of developers around the world contribute to repositories related to Machine Learning, Deep Learning, Large Language Models (LLMs), and Artificial Intelligence. However, it is difficult to understand how this ecosystem evolves globally and which regions and technologies are leading the development of AI.
+
+This project aims to analyze the global landscape of open-source AI development using large-scale GitHub repository data. By leveraging public datasets available in BigQuery, the project explores trends in AI-related repositories and investigates which AI domains are growing the fastest, which programming languages are most commonly used in AI projects, and how development activity is distributed across countries and continents.
+
+Through an end-to-end data engineering pipeline, the project collects, processes, and transforms GitHub repository data to build an analytical dataset that supports interactive visualization and exploration.
+
+The final outcome is a dashboard that provides insights into:
+
+* The distribution of AI-related repositories across different domains (Machine Learning, Deep Learning, LLMs, and Artificial Intelligence)
+* The programming languages most frequently used in AI projects
+
+By transforming large-scale open-source data into meaningful insights, this project aims to provide a clearer view of how the global AI ecosystem is evolving and which technologies and regions are driving innovation.
+
+## Architecture
+
+This project builds an end-to-end data engineering pipeline to analyze the global open-source Artificial Intelligence ecosystem using large-scale GitHub repository data.
+
+```mermaid
+flowchart LR
+
+A[BigQuery Public Dataset<br>GitHub Repositories] --> B[Data Extraction & Filtering]
+
+B --> C[GCS Data Lake<br>Raw AI Repository Data]
+
+C --> D[BigQuery Data Warehouse<br>Raw Tables]
+
+D --> E[dbt Transformation Layer]
+
+E --> F[Analytics Tables<br>AI Insights Dataset]
+
+F --> G[Power BI Dashboard]
+
+```
+
 
 ### Step 1 — Google Cloud Environment Setup
 
