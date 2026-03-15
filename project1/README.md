@@ -41,7 +41,590 @@ E --> F[Analytics Tables<br>AI Insights Dataset]
 F --> G[Power BI Dashboard]
 
 ```
+---
 
+## Pipeline Stages
+
+### **1. Data Source**
+
+The project uses the **GitHub repositories public dataset** available in BigQuery.
+This dataset contains information about repositories, commits, files, and programming languages across millions of open-source projects.
+
+It serves as the primary data source for identifying repositories related to Artificial Intelligence, Machine Learning, Deep Learning, and Large Language Models (LLMs).
+
+---
+
+### **2. Data Extraction**
+
+Relevant repository data is extracted from the BigQuery public dataset using SQL queries and filtering logic.
+
+This step identifies repositories related to AI domains by searching repository metadata and descriptions for keywords such as *machine learning*, *deep learning*, *LLM*, and *artificial intelligence*.
+
+---
+
+### **3. Data Lake**
+
+The filtered repository data is exported to **Google Cloud Storage (GCS)**.
+
+This creates a **data lake layer** where raw AI-related repository data is stored before further transformation.
+
+Storing raw data in the data lake ensures:
+
+* reproducibility
+* scalability
+* preservation of the original extracted dataset
+
+---
+
+### **4. Data Warehouse**
+
+The raw data stored in GCS is then loaded into **BigQuery**, which acts as the analytical data warehouse.
+
+At this stage:
+
+* repository data is structured into warehouse tables
+* datasets are optimized for analytical queries
+* large-scale analysis can be performed efficiently
+
+---
+
+### **5. Data Transformation**
+
+Data transformations are implemented using **dbt (Data Build Tool)**.
+
+dbt models transform the raw repository dataset into **analytics-ready tables**, including:
+
+* AI repository growth over time
+* programming language distribution
+* geographic distribution of AI development
+* AI domain classification
+
+These transformations create a structured analytics layer for downstream analysis.
+
+---
+
+### **6. Visualization**
+
+The final stage connects the analytics tables in **BigQuery** to **Power BI**.
+
+An interactive dashboard is created to visualize insights about the global open-source AI ecosystem.
+
+The dashboard highlights trends such as:
+
+* growth of AI repositories over time
+* distribution of programming languages used in AI projects
+* geographic distribution of AI development
+* dominant AI domains across open-source repositories
+
+---
+
+# Data Pipeline Explanation
+
+This project implements an **end-to-end data engineering pipeline** designed to analyze the global evolution of Artificial Intelligence development within the open-source ecosystem. The pipeline processes large-scale GitHub repository data through multiple data layers and ultimately delivers analytical insights through an interactive dashboard.
+
+The architecture follows a modern data platform approach consisting of **data ingestion, data lake storage, data warehousing, transformation, and visualization layers**.
+
+---
+
+## 1. Data Source
+
+The pipeline uses the **GitHub Repositories Public Dataset** available in BigQuery.
+
+This dataset contains extensive information about open-source repositories, including repository metadata, commits, files, and programming languages.
+
+The dataset serves as the primary source for identifying repositories related to:
+
+* Artificial Intelligence
+* Machine Learning
+* Deep Learning
+* Large Language Models (LLMs)
+
+By querying this dataset, the project extracts repositories relevant to AI-related technologies.
+
+---
+
+## 2. Data Extraction
+
+Relevant repository data is extracted from the BigQuery public dataset using SQL queries.
+
+Repositories are filtered using keyword-based detection strategies that identify projects related to Artificial Intelligence and its subdomains.
+
+This step ensures that only repositories relevant to AI technologies are included in the analytical pipeline.
+
+---
+
+## 3. Data Ingestion and Data Lake Layer
+
+During the ingestion stage, the filtered repository dataset is exported and stored in **Google Cloud Storage (GCS)**.
+
+This creates a **data lake layer**, where raw filtered data is preserved before further transformation.
+
+The data lake layer provides several benefits:
+
+* Preservation of raw extracted data
+* Reproducibility of the pipeline
+* Scalable data storage for large datasets
+
+The extracted data is stored in columnar formats such as **Parquet**, which improves storage efficiency and query performance.
+
+---
+
+## 4. Data Warehouse Layer
+
+After ingestion, the raw dataset is loaded into **BigQuery**, which acts as the central **data warehouse** of the project.
+
+At this stage:
+
+* Raw repository data is structured into warehouse tables
+* Data becomes optimized for analytical queries
+* Large-scale analysis can be performed efficiently
+
+BigQuery enables fast processing of large datasets and serves as the core analytical engine for the pipeline.
+
+---
+
+## 5. Data Transformation
+
+Data transformation is implemented using **dbt (Data Build Tool)**.
+
+dbt transforms raw repository data into **analytics-ready tables** by applying modular SQL transformations.
+
+The transformation layer focuses on:
+
+* Identifying AI-related repositories
+* Aggregating repository statistics
+* Preparing structured datasets for analytical queries
+
+These transformations generate curated datasets that power the analytical layer of the project.
+
+---
+
+## 6. Analytics Layer
+
+The transformed datasets form an **AI ecosystem analytics layer**, which provides insights into several aspects of global AI development.
+
+This layer enables analysis of:
+
+* The distribution of AI repositories across different domains
+* The geographic distribution of AI development activity
+* The most commonly used programming languages in AI projects
+* The growth of AI-related repositories over time
+
+These analytics tables serve as the foundation for the visualization layer.
+
+---
+
+## 7. Visualization
+
+The final stage of the pipeline connects the analytics tables stored in **BigQuery** to **Power BI**, where interactive dashboards are created.
+
+The dashboard enables users to explore key insights related to the global open-source AI ecosystem, including:
+
+* AI repository growth trends
+* AI development activity by country and continent
+* Programming language distribution in AI projects
+* Category distribution across Machine Learning, Deep Learning, LLMs, and Artificial Intelligence
+
+By combining large-scale open-source data with interactive visualization, the dashboard transforms complex repository data into **clear and accessible insights about the global evolution of Artificial Intelligence**.
+
+---
+## Tech Stack
+
+This project leverages a modern data engineering stack to build a scalable end-to-end pipeline for analyzing the global open-source Artificial Intelligence ecosystem.
+
+### Cloud Platform
+
+**Google Cloud Platform (GCP)**
+The project is deployed on GCP, providing scalable infrastructure and managed services for data processing and storage.
+
+---
+
+### Infrastructure as Code
+
+**Terraform**
+Terraform is used to provision and manage cloud infrastructure resources such as storage buckets and data warehouse components in a reproducible and automated way.
+
+---
+
+### Workflow Execution
+
+The execution of the data pipeline is managed through a structured sequence of data processing steps.
+
+The workflow consists of:
+
+* Extracting AI-related repository data from the BigQuery public dataset
+* Exporting filtered data to Google Cloud Storage (GCS) to create a raw data layer
+* Loading the dataset into BigQuery warehouse tables
+* Running dbt models to transform raw data into analytics-ready datasets
+
+The transformation layer is executed using:
+
+```
+dbt run
+```
+
+This command builds the defined dbt models and generates the analytical tables used in the visualization layer.
+
+By structuring the pipeline in modular stages, the workflow remains **reproducible, scalable, and easy to maintain**.
+
+---
+
+### Data Lake
+
+**Google Cloud Storage (GCS)**
+GCS serves as the data lake layer where raw extracted data from the GitHub dataset is stored before being processed and loaded into the data warehouse.
+
+---
+
+### Data Warehouse
+
+**BigQuery**
+BigQuery acts as the analytical data warehouse for this project. It enables fast querying and processing of large-scale GitHub repository datasets.
+
+---
+
+### Data Transformation
+
+**dbt (Data Build Tool)**
+dbt is used to transform raw repository data into analytics-ready datasets by creating structured models and applying SQL-based transformations.
+
+---
+
+### Programming Language
+
+**Python**
+Python is used for data extraction scripts and pipeline development, particularly within Airflow tasks.
+
+---
+
+### Data Visualization
+
+**Power BI**
+Power BI is used to build interactive dashboards that visualize trends in global AI development, including repository growth, programming language usage, and geographic distribution of AI projects.
+
+---
+
+### Data Source
+
+**GitHub Public Dataset (BigQuery)**
+The project uses the publicly available GitHub repositories dataset hosted in BigQuery, which contains large-scale open-source development data including commits, files, and programming languages.
+
+## Dataset
+
+### GitHub Repositories Public Dataset
+
+This project uses the **GitHub Repositories Public Dataset** available on Google BigQuery. The dataset contains large-scale information about open-source repositories hosted on GitHub, including repository metadata, commits, files, and programming languages.
+
+The dataset is maintained as part of the BigQuery Public Datasets program and provides access to millions of open-source projects, enabling large-scale analysis of software development trends.
+
+### Dataset Source
+
+The dataset is available directly in BigQuery:
+
+```
+bigquery-public-data.github_repos
+```
+
+This public dataset allows querying repository information without the need to download or store the full dataset locally.
+
+### Key Tables Used
+
+The following tables are primarily used in this project:
+
+| Table       | Description                                             |
+| ----------- | ------------------------------------------------------- |
+| `languages` | Contains programming languages used in repositories     |
+| `commits`   | Provides commit history information for repositories    |
+| `contents`  | Includes file content and metadata for repository files |
+| `files`     | Contains file-level metadata                            |
+| `licenses`  | Provides license information for repositories           |
+
+For development and testing purposes, smaller sample tables are also used:
+
+| Sample Tables     |
+| ----------------- |
+| `sample_repos`    |
+| `sample_commits`  |
+| `sample_contents` |
+| `sample_files`    |
+
+### Dataset Size
+
+The GitHub repositories dataset is extremely large, containing data across millions of repositories and billions of files and commits. This makes it well suited for large-scale analytics and data engineering pipelines.
+
+### Relevance to the Project
+
+This dataset enables the identification and analysis of repositories related to:
+
+* Machine Learning
+* Deep Learning
+* Large Language Models (LLMs)
+* Artificial Intelligence
+
+By filtering repository metadata and content for AI-related keywords, the dataset can be transformed into an analytical dataset that reveals global trends in AI development.
+
+The resulting dataset supports the creation of insights such as:
+
+* Programming languages most frequently used in AI projects
+* Distribution of AI domains across different regions
+
+## Power BI Dashboard
+
+The final stage of this project is an interactive **Power BI dashboard** designed to visualize and explore the global evolution of Artificial Intelligence development within the open-source ecosystem.
+
+The dashboard connects directly to the analytics tables generated in **BigQuery**, enabling efficient exploration of large-scale repository data and providing meaningful insights into AI-related open-source activity.
+
+### Dashboard Objectives
+
+The dashboard aims to answer the following key questions:
+
+* Which programming languages are most commonly used in AI-related repositories?
+* How has the number of AI repositories evolved over time?
+
+---
+
+### Key Visualizations
+
+#### 1. AI Repository Distribution by Category
+
+This visualization shows the distribution of repositories across major AI domains, including:
+
+* Machine Learning
+* Deep Learning
+* Large Language Models (LLMs)
+* Artificial Intelligence
+
+This chart helps identify which AI areas dominate open-source development.
+
+---
+
+#### 2. Programming Languages Used in AI Projects
+
+This chart displays the most commonly used programming languages across AI repositories.
+
+Typical trends observed include strong dominance of languages such as:
+
+* Python
+* C++
+* JavaScript
+* Rust
+* Go
+
+This chart reveals which regions of the world contribute most actively to open-source AI innovation.
+
+---
+
+### Insights Generated
+
+By combining repository metadata, programming language data, and geographic information, the dashboard provides insights into:
+
+* The global growth of Artificial Intelligence development
+* Technology stacks used in AI projects
+* Regional patterns in open-source innovation
+* Emerging AI domains gaining traction
+
+This dashboard transforms large-scale GitHub repository data into an accessible and interactive platform for understanding the evolution of the global AI ecosystem.
+
+## Project Structure
+
+The project is organized into multiple layers representing the stages of a modern data engineering pipeline.
+
+```
+ai-open-source-intelligence-platform/
+│
+├── terraform/
+│   └──  main.tf
+│
+├── dbt/
+│   ├── models/
+│   │   ├── staging/
+│   │   │   └── stg_ai_repositories.sql
+│   │   ├── marts/
+│   │   │   ├── ai_repo_ai_type.sql
+│   │   │   └── ai_repo_languages.sql
+│   │   └── schema.yml
+│   └── dbt_project.yml
+│
+├── dashboards/
+│   ├── sum_of_repo_count_by_languages.pbix
+│   └── sum_of_repo_count_by_ai_type.pbix
+│
+├── docs/
+│   ├── sum_of_repo_count_by_languages.csv
+│   └── sum_of_repo_count_by_ai_type.csv
+│
+└── README.md
+```
+### Folder Overview
+
+**terraform/**
+Includes Infrastructure as Code (IaC) configuration files used to provision cloud resources such as storage buckets and BigQuery datasets.
+
+**dbt/**
+Contains data transformation logic implemented using dbt.
+Models are organized into staging and mart layers to prepare analytics-ready datasets.
+
+**dashboards/**
+Contains the Power BI dashboard file used for data visualization and exploration.
+
+**data/**
+Contains example queries and intermediate SQL scripts used during development.
+
+**docs/**
+Includes architecture diagrams and documentation assets used in the project README.
+
+---
+## How to Run the Project
+
+Follow the steps below to reproduce the full data engineering pipeline and generate the AI ecosystem analytics dashboard.
+
+### 1. Prerequisites
+
+Make sure the following tools are installed on your system:
+
+* Python 3.11+
+* Docker & Docker Compose
+* Terraform
+* Google Cloud SDK
+* dbt
+
+
+You also need a **Google Cloud Platform (GCP)** account with access to:
+
+* BigQuery
+* Google Cloud Storage
+
+---
+
+### 2. Clone the Repository
+
+```
+git clone https://github.com/<your-username>/ai-open-source-intelligence-platform.git
+cd ai-open-source-intelligence-platform
+```
+
+---
+
+### 3. Configure Google Cloud
+
+Authenticate your Google Cloud account:
+
+```
+gcloud auth application-default login
+```
+
+Set project ID:
+
+```
+gcloud config set project <braided-keel-490209-q8>
+```
+
+---
+
+### 4. Provision Infrastructure
+
+Use Terraform to provision the required cloud resources:
+
+```
+cd terraform
+terraform init
+terraform apply
+```
+
+This step creates:
+
+* Google Cloud Storage bucket (Data Lake)
+* BigQuery datasets (Data Warehouse)
+
+---
+
+### 5. Start Airflow
+
+Run Airflow using Docker:
+
+```
+docker-compose up
+```
+
+This pipeline will:
+
+* Extract GitHub repository data
+* Filter AI-related repositories
+* Store raw data in GCS
+* Load data into BigQuery
+
+---
+
+### 6. Run dbt Transformations
+
+Navigate to the dbt directory:
+
+```
+cd dbt
+dbt run
+```
+
+This step transforms raw repository data into analytics-ready tables.
+
+---
+
+### 7. Launch the Dashboard
+
+Open the Power BI dashboard file:
+
+```id=
+dashboards/sum_of_repo_count_by_languages.pbix
+dashboards/sum_of_repo_count_by_ai_type.pbix
+```
+
+Connect Power BI to the BigQuery analytics tables to visualize the results.
+
+---
+
+### 8. Explore the Dashboard
+
+The dashboard provides insights into:
+
+* Distribution of AI domains
+* Programming languages used in AI projects
+
+## Key Insights
+
+The analysis of the global open-source AI ecosystem reveals several important patterns and trends in how artificial intelligence technologies are evolving across the world.
+
+### Rapid Growth of AI Development
+
+The number of repositories related to Artificial Intelligence, Machine Learning, and Deep Learning has increased significantly over time.
+This trend reflects the rapid expansion of AI research and development within the open-source community.
+
+Large Language Models (LLMs) have emerged as one of the fastest growing areas in recent years, indicating a strong shift toward generative AI technologies.
+
+---
+
+### Dominance of Python in AI Projects
+
+The analysis shows that **Python is the dominant programming language** used in AI-related repositories.
+
+Other languages such as **C++, JavaScript, Rust, and Go** also appear in AI projects, but Python remains the most widely used due to its rich ecosystem of AI frameworks and libraries.
+
+---
+
+### Diversity of AI Domains
+
+The analysis also highlights the diversity of AI domains within the open-source ecosystem, including:
+
+* Machine Learning
+* Deep Learning
+* Natural Language Processing
+* Large Language Models (LLMs)
+
+These domains reflect the wide range of applications and research areas currently shaping the future of Artificial Intelligence.
+
+Overall, the insights generated by this project demonstrate how open-source data can be used to understand the global evolution of Artificial Intelligence and identify the technologies and regions driving innovation.
+
+---
+
+# Project Solution:
 
 ### Step 1 — Google Cloud Environment Setup
 
