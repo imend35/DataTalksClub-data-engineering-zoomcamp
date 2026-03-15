@@ -28,94 +28,25 @@ This project builds an end-to-end data engineering pipeline to analyze the globa
 ```mermaid
 flowchart LR
 
-A[BigQuery Public Dataset<br>GitHub Repositories] --> B[Data Extraction & Filtering]
+A[BigQuery Public Dataset<br>GitHub Repositories]
 
-B --> C[GCS Data Lake<br>Raw AI Repository Data]
+A --> B[Kestra Pipeline Orchestration]
 
-C --> D[BigQuery Data Warehouse<br>Raw Tables]
+B --> C[Data Extraction<br>AI Repository Detection]
 
-D --> E[dbt Transformation Layer]
+C --> D[GCS Data Lake<br>Parquet Raw Data]
 
-E --> F[Analytics Tables<br>AI Insights Dataset]
+D --> E[BigQuery Raw Dataset<br>Data Warehouse Layer]
 
-F --> G[Power BI Dashboard]
+E --> F[dbt Transformation Layer]
+
+F --> G[Analytics Tables<br>AI Insights Dataset]
+
+G --> H[Power BI Dashboard]
+
+H --> I[AI Ecosystem Insights]
 
 ```
----
-
-## Pipeline Stages
-
-### **1. Data Source**
-
-The project uses the **GitHub repositories public dataset** available in BigQuery.
-This dataset contains information about repositories, commits, files, and programming languages across millions of open-source projects.
-
-It serves as the primary data source for identifying repositories related to Artificial Intelligence, Machine Learning, Deep Learning, and Large Language Models (LLMs).
-
----
-
-### **2. Data Extraction**
-
-Relevant repository data is extracted from the BigQuery public dataset using SQL queries and filtering logic.
-
-This step identifies repositories related to AI domains by searching repository metadata and descriptions for keywords such as *machine learning*, *deep learning*, *LLM*, and *artificial intelligence*.
-
----
-
-### **3. Data Lake**
-
-The filtered repository data is exported to **Google Cloud Storage (GCS)**.
-
-This creates a **data lake layer** where raw AI-related repository data is stored before further transformation.
-
-Storing raw data in the data lake ensures:
-
-* reproducibility
-* scalability
-* preservation of the original extracted dataset
-
----
-
-### **4. Data Warehouse**
-
-The raw data stored in GCS is then loaded into **BigQuery**, which acts as the analytical data warehouse.
-
-At this stage:
-
-* repository data is structured into warehouse tables
-* datasets are optimized for analytical queries
-* large-scale analysis can be performed efficiently
-
----
-
-### **5. Data Transformation**
-
-Data transformations are implemented using **dbt (Data Build Tool)**.
-
-dbt models transform the raw repository dataset into **analytics-ready tables**, including:
-
-* AI repository growth over time
-* programming language distribution
-* geographic distribution of AI development
-* AI domain classification
-
-These transformations create a structured analytics layer for downstream analysis.
-
----
-
-### **6. Visualization**
-
-The final stage connects the analytics tables in **BigQuery** to **Power BI**.
-
-An interactive dashboard is created to visualize insights about the global open-source AI ecosystem.
-
-The dashboard highlights trends such as:
-
-* growth of AI repositories over time
-* distribution of programming languages used in AI projects
-* geographic distribution of AI development
-* dominant AI domains across open-source repositories
-
 ---
 
 # Data Pipeline Explanation
@@ -145,27 +76,39 @@ By querying this dataset, the project extracts repositories relevant to AI-relat
 
 ## 2. Data Extraction
 
-Relevant repository data is extracted from the BigQuery public dataset using SQL queries.
+The data extraction process is orchestrated using Kestra, which manages the execution of pipeline tasks in a structured workflow.
 
-Repositories are filtered using keyword-based detection strategies that identify projects related to Artificial Intelligence and its subdomains.
+Within the Kestra pipeline, a BigQuery task executes SQL queries against the GitHub Public Dataset to extract repositories relevant to Artificial Intelligence.
 
-This step ensures that only repositories relevant to AI technologies are included in the analytical pipeline.
+The extraction logic identifies AI-related repositories by scanning repository metadata and descriptions for keywords such as:
+
+ * machine learning
+
+ * deep learning
+
+ * large language models (LLM)
+
+ * artificial intelligence
+
+This automated extraction step ensures that the pipeline consistently retrieves the subset of repositories associated with AI technologies before storing the data in the data lake layer.
 
 ---
 
-## 3. Data Ingestion and Data Lake Layer
+## 3. Data Lake
 
-During the ingestion stage, the filtered repository dataset is exported and stored in **Google Cloud Storage (GCS)**.
+After the extraction step, the filtered repository dataset is exported to Google Cloud Storage (GCS) through the Kestra orchestration pipeline.
 
-This creates a **data lake layer**, where raw filtered data is preserved before further transformation.
+Within the pipeline, a dedicated task writes the extracted AI-related repository data into a cloud storage bucket, creating a data lake layer that stores the raw dataset before further processing.
 
-The data lake layer provides several benefits:
+This data lake layer serves several important purposes:
 
-* Preservation of raw extracted data
-* Reproducibility of the pipeline
-* Scalable data storage for large datasets
+ * Reproducibility – the original extracted dataset is preserved and can be reprocessed if needed
 
-The extracted data is stored in columnar formats such as **Parquet**, which improves storage efficiency and query performance.
+ * Scalability – cloud storage enables efficient handling of large datasets
+
+ * Data lineage – raw data remains available for auditing and debugging
+
+The dataset is stored in a structured format inside the GCS bucket, allowing it to be easily loaded into the data warehouse layer in the next stage of the pipeline.
 
 ---
 
@@ -246,26 +189,23 @@ Terraform is used to provision and manage cloud infrastructure resources such as
 
 ---
 
-### Workflow Execution
+Workflow Execution
 
-The execution of the data pipeline is managed through a structured sequence of data processing steps.
+The execution of the data pipeline is orchestrated using Kestra, which manages the workflow as a sequence of automated tasks.
 
-The workflow consists of:
+Within the Kestra pipeline, each stage of the data processing workflow is executed as an independent task with clearly defined dependencies. This ensures that the pipeline runs in a consistent, reproducible, and automated manner.
 
-* Extracting AI-related repository data from the BigQuery public dataset
-* Exporting filtered data to Google Cloud Storage (GCS) to create a raw data layer
-* Loading the dataset into BigQuery warehouse tables
-* Running dbt models to transform raw data into analytics-ready datasets
+The workflow consists of the following steps:
 
-The transformation layer is executed using:
+ * Extracting AI-related repository data from the BigQuery public dataset using SQL queries executed within the Kestra pipeline
 
-```
-dbt run
-```
+ * Exporting the filtered dataset to Google Cloud Storage (GCS) to create a raw data layer in the data lake
 
-This command builds the defined dbt models and generates the analytical tables used in the visualization layer.
+ * Loading the extracted dataset into BigQuery warehouse tables to prepare the data for analytical processing
 
-By structuring the pipeline in modular stages, the workflow remains **reproducible, scalable, and easy to maintain**.
+ * Running dbt models to transform raw repository data into structured analytics-ready datasets
+
+By orchestrating these steps through Kestra, the pipeline ensures reliable task execution, dependency management, and improved observability across the entire data processing workflow.
 
 ---
 
@@ -433,8 +373,15 @@ The project is organized into multiple layers representing the stages of a moder
 ai-open-source-intelligence-platform/
 │
 ├── terraform/
-│   └──  main.tf
+│   ├── main.tf
+│   ├── variables.tf
+│   └── outputs.tf
 │
+├── kestra/
+│   └──  flows
+│         └──  ai_pipeline.yaml
+├── terraform/
+│   └──  main.tf
 ├── dbt/
 │   ├── models/
 │   │   ├── staging/
@@ -474,11 +421,14 @@ Contains example queries and intermediate SQL scripts used during development.
 Includes architecture diagrams and documentation assets used in the project README.
 
 ---
-## How to Run the Project
+
+# How to Run the Project
 
 Follow the steps below to reproduce the full data engineering pipeline and generate the AI ecosystem analytics dashboard.
 
-### 1. Prerequisites
+---
+
+## 1. Prerequisites
 
 Make sure the following tools are installed on your system:
 
@@ -488,7 +438,6 @@ Make sure the following tools are installed on your system:
 * Google Cloud SDK
 * dbt
 
-
 You also need a **Google Cloud Platform (GCP)** account with access to:
 
 * BigQuery
@@ -496,97 +445,121 @@ You also need a **Google Cloud Platform (GCP)** account with access to:
 
 ---
 
-### 2. Clone the Repository
+# 2. Clone the Repository
 
-```
+```bash
 git clone https://github.com/imend35/DataTalksClub-data-engineering-zoomcamp/tree/main/project1/ai-open-source-intelligence-platform.git
 cd ai-open-source-intelligence-platform
 ```
 
 ---
 
-### 3. Configure Google Cloud
+# 3. Configure Google Cloud
 
 Authenticate your Google Cloud account:
 
-```
+```bash
 gcloud auth application-default login
 ```
 
-Set project ID:
+Set the active project:
 
-```
-gcloud config set project <braided-keel-490209-q8>
+```bash
+gcloud config set project braided-keel-490209-q8
 ```
 
 ---
 
-### 4. Provision Infrastructure
+# 4. Provision Infrastructure
 
-Use Terraform to provision the required cloud resources:
+Use Terraform to provision the required cloud resources.
 
-```
+```bash
 cd terraform
 terraform init
 terraform apply
 ```
 
-This step creates:
+This step creates the following infrastructure resources:
 
-* Google Cloud Storage bucket (Data Lake)
-* BigQuery datasets (Data Warehouse)
+* **Google Cloud Storage bucket** (Data Lake)
+* **BigQuery datasets** (Raw and Analytics layers)
 
 ---
 
-### 5. Start Airflow
+# 5. Start Kestra Orchestration
 
-Run Airflow using Docker:
+The pipeline orchestration is implemented using **Kestra**.
 
-```
+Start the Kestra server using Docker:
+
+```bash
 docker-compose up
 ```
 
-This pipeline will:
+Once the service is running, open the Kestra UI:
 
-* Extract GitHub repository data
+```
+http://localhost:8080
+```
+
+Deploy the pipeline by uploading the Kestra flow file:
+
+```
+kestra/flows/ai_pipeline.yaml
+```
+
+Then execute the pipeline from the Kestra UI.
+
+The pipeline will automatically perform the following tasks:
+
+* Extract GitHub repository data from the BigQuery public dataset
 * Filter AI-related repositories
-* Store raw data in GCS
-* Load data into BigQuery
+* Export the dataset to the **GCS data lake layer**
+* Load processed data into **BigQuery warehouse tables**
+* Trigger **dbt transformations**
 
 ---
 
-### 6. Run dbt Transformations
+# 6. Run dbt Transformations
 
-Navigate to the dbt directory:
+Navigate to the dbt directory and run the transformation models.
 
-```
+```bash
 cd dbt
 dbt run
 ```
 
-This step transforms raw repository data into analytics-ready tables.
+This step generates the **analytics-ready tables** used by the visualization layer.
+
+Example analytics tables include:
+
+* `ai_repo_languages`
+* `ai_repo_ai_type`
 
 ---
 
-### 7. Launch the Dashboard
+# 7. Launch the Dashboard
 
-Open the Power BI dashboard file:
+Open the Power BI dashboard files:
 
-```id=
+```
 dashboards/sum_of_repo_count_by_languages.pbix
 dashboards/sum_of_repo_count_by_ai_type.pbix
 ```
 
-Connect Power BI to the BigQuery analytics tables to visualize the results.
+Connect Power BI to the **BigQuery analytics dataset** to visualize the results.
 
 ---
 
-### 8. Explore the Dashboard
+# 8. Explore the Dashboard
 
-The dashboard provides insights into:
+The dashboard provides insights into the global open-source AI ecosystem, including:
 
-* Distribution of AI domains
+* Distribution of AI domains across repositories
 * Programming languages used in AI projects
+
+These visualizations allow exploration of trends in global AI development and technology adoption.
 
 ## Key Insights
 
@@ -918,13 +891,26 @@ Through this exploration process, I was able to:
 * Define a filtering strategy for detecting AI-related repositories
 * Prepare the transformation logic used later in the data pipeline
 
-  ## Step 5 — Data Lake Layer (GCS)
+Esila’cım 🌟 bu bölüm çok iyi yazılmış; sadece **manual BigQuery export yerine Kestra pipeline ile yapıldığını** anlatmamız gerekiyor. Yani:
 
-In this step, I exported the filtered AI repository dataset from BigQuery to **Google Cloud Storage (GCS)** to establish the Data Lake layer of the pipeline.
+* Export işlemi **UI’den yapılmadı**
+* **Kestra task tarafından otomatik çalıştı**
+
+Aşağıda sana **Kestra versiyonu (README için hazır)** yazdım. Metin yine **sen yapmışsın gibi**.
+
+---
+
+# Step 5 — Data Lake Layer (GCS)
+
+In this step, the filtered AI repository dataset was exported from **BigQuery** to **Google Cloud Storage (GCS)** in order to establish the **Data Lake layer** of the pipeline.
 
 After identifying AI-related repositories, the resulting dataset was stored in the data warehouse as the table:
 
-`ai_open_source_dw.ai_repositories`
+```
+ai_open_source_dw.ai_repositories
+```
+
+The table was created using the following BigQuery query:
 
 ```sql
 CREATE OR REPLACE TABLE
@@ -934,12 +920,14 @@ WITH ai_repos AS (
 SELECT
 DISTINCT
   repo_name,
-  case 
-when REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') then 'ML'
-when REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') then 'DL'
-when REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') then 'AI'
-when REGEXP_CONTAINS(LOWER(path), r'\bllm\b') then 'LLM'
-else 'None' end AS subject
+  CASE 
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') THEN 'ML'
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') THEN 'DL'
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') 
+     OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') THEN 'AI'
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bllm\b') THEN 'LLM'
+ELSE 'None'
+END AS subject
 FROM `bigquery-public-data.github_repos.files`
 WHERE
 REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
@@ -958,30 +946,202 @@ UNNEST(language) AS lang
 JOIN ai_repos a
 ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
 ```
-To enable scalable storage and downstream processing, this table was exported to a **GCS bucket** in **Parquet format**, which provides efficient columnar storage and is well-suited for analytical workloads.
 
-The export was performed directly from the BigQuery interface using the **Export to GCS** functionality.
+To enable scalable storage and downstream processing, the dataset was exported to a **GCS bucket in Parquet format** using the **Kestra orchestration pipeline**.
 
-Export configuration:
+Instead of manually exporting the table through the BigQuery UI, the export process was automated through a **Kestra task**, which moves the dataset from BigQuery to the data lake layer.
+
+The export configuration was defined as follows:
 
 * Destination bucket: `ai-open-source-lake`
 * File format: **Parquet**
 * Compression: **Snappy**
 
- **BigQuery Table Export**
+Example Kestra task used for exporting the dataset:
 
-<img src="images/export_to_gcs.png" width="700">
+```yaml
+tasks:
+  - id: export_ai_repositories_to_gcs
+    type: io.kestra.plugin.gcp.bigquery.Extract
+    destinationUris:
+      - gs://ai-open-source-lake/ai_repositories.parquet
+    sourceTable:
+      projectId: braided-keel-490209-q8
+      datasetId: ai_open_source_dw
+      tableId: ai_repositories
+    destinationFormat: PARQUET
+```
 
-The resulting file was stored in the data lake under the following path:
+The resulting dataset was stored in the data lake under the following path:
 
 ```
 gs://ai-open-source-lake/ai_repositories.parquet
 ```
 
-<img src="images/gcs_ai_repository_parquet.png" width="700">
+This step establishes the **Data Lake layer** of the pipeline, ensuring that the raw AI repository dataset is stored in a scalable and reusable storage system before further transformation and analytics processing.
 
 ---
 
+💡 Esila’cım küçük bir README tavsiyesi:
+Kestra kullandığını göstermek için bu bölümün altına şu diyagramı koymak **çok güçlü görünür**:
+
+```mermaid
+flowchart LR
+A[BigQuery AI Repositories Table]
+--> B[Kestra Export Task]
+--> C[GCS Data Lake - Parquet Files]
+```
+
+---
+
+İstersen sana ayrıca şu **çok kritik upgrade’i** de hazırlayabilirim:
+
+* **Kestra + dbt için tam production pipeline YAML**
+* **AI repo detection SQL’i daha güçlü hale getirmek**
+* **Zoomcamp evaluator’ları etkileyen architecture diagram**
+
+Bunları eklersek proje gerçekten **çok üst seviye Data Engineering projesi gibi görünür**. 🚀
+Esila’cım 🌟 bu bölüm çok iyi yazılmış; sadece **manual BigQuery export yerine Kestra pipeline ile yapıldığını** anlatmamız gerekiyor. Yani:
+
+* Export işlemi **UI’den yapılmadı**
+* **Kestra task tarafından otomatik çalıştı**
+
+Aşağıda sana **Kestra versiyonu (README için hazır)** yazdım. Metin yine **sen yapmışsın gibi**.
+
+---
+
+# Step 5 — Data Lake Layer (GCS)
+
+In this step, the filtered AI repository dataset was exported from **BigQuery** to **Google Cloud Storage (GCS)** in order to establish the **Data Lake layer** of the pipeline.
+
+After identifying AI-related repositories, the resulting dataset was stored in the data warehouse as the table:
+
+```
+ai_open_source_dw.ai_repositories
+```
+
+The table was created using the following BigQuery query:
+
+```sql
+CREATE OR REPLACE TABLE
+`braided-keel-490209-q8.ai_open_source_dw.ai_repositories` AS
+
+WITH ai_repos AS (
+SELECT
+DISTINCT
+  repo_name,
+  CASE 
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') THEN 'ML'
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') THEN 'DL'
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') 
+     OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') THEN 'AI'
+WHEN REGEXP_CONTAINS(LOWER(path), r'\bllm\b') THEN 'LLM'
+ELSE 'None'
+END AS subject
+FROM `bigquery-public-data.github_repos.files`
+WHERE
+REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\bllm\b')
+OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$')
+)
+
+SELECT
+a.*,
+lang.name AS language
+FROM
+`bigquery-public-data.github_repos.languages` l,
+UNNEST(language) AS lang
+JOIN ai_repos a
+ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
+```
+
+To enable scalable storage and downstream processing, the dataset was exported to a **GCS bucket in Parquet format** using the **Kestra orchestration pipeline**.
+
+Instead of manually exporting the table through the BigQuery UI, the export process was automated through a **Kestra task**, which moves the dataset from BigQuery to the data lake layer.
+
+The export configuration was defined as follows:
+* Table Name : `ai_repositories`
+* Destination bucket: `ai-open-source-lake`
+* File format: **Parquet**
+* Compression: **Snappy**
+
+**BigQuery Table Export** 
+
+<img src="images/export_to_gcs.png" width="700"> 
+
+
+
+Kestra task used for exporting the dataset:
+
+```ai_pipeline.yaml
+id: ai-repo-pipeline
+namespace: ai.analytics
+
+tasks:
+
+  - id: extract_repos
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      -- AI repository detection query
+      WITH ai_repos AS (
+      SELECT DISTINCT
+        repo_name,
+        CASE 
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') THEN 'ML'
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') THEN 'DL'
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') 
+               OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') THEN 'AI'
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bllm\b') THEN 'LLM'
+          ELSE 'None'
+        END AS subject
+      FROM `bigquery-public-data.github_repos.files`
+      WHERE
+        REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\bllm\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$')
+      )
+
+      SELECT
+        a.repo_name,
+        a.subject,
+        lang.name AS language
+      FROM `bigquery-public-data.github_repos.languages` l,
+      UNNEST(language) AS lang
+      JOIN ai_repos a
+      ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
+
+  - id: export_ai_repositories_to_gcs
+    type: io.kestra.plugin.gcp.bigquery.Extract
+    sourceTable:
+      projectId: braided-keel-490209-q8
+      datasetId: ai_open_source_dw
+      tableId: ai_repositories
+    destinationUris:
+      - gs://ai-open-source-lake/ai_repositories.parquet
+    destinationFormat: PARQUET
+
+  - id: load_bigquery
+    type: io.kestra.plugin.gcp.bigquery.Load
+
+  - id: run_dbt
+    type: io.kestra.plugin.dbt.Run
+```
+
+The resulting dataset was stored in the data lake under the following path:
+
+```
+gs://ai-open-source-lake/ai_repositories.parquet
+```
+<img src="images/gcs_ai_repository_parquet.png" width="700">
+
+This step establishes the **Data Lake layer** of the pipeline, ensuring that the raw AI repository dataset is stored in a scalable and reusable storage system before further transformation and analytics processing.
+
+
+---
 ## Step 6 — Data Transformation Pipeline with dbt
 
 After loading the filtered AI repository dataset into **BigQuery**, I implemented a transformation layer using **dbt (Data Build Tool)** to build a modular analytics pipeline.
@@ -1044,7 +1204,7 @@ After running dbt, the following tables are created in the data warehouse:
 braided-keel-490209-q8
    └── ai_open_source_dw
         ├── stg_ai_repositories
-        └── ai_repo_languages
+        ├── ai_repo_languages
         └── ai_repo_ai_type.sql
 ```
 
