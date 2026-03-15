@@ -891,13 +891,6 @@ Through this exploration process, I was able to:
 * Define a filtering strategy for detecting AI-related repositories
 * Prepare the transformation logic used later in the data pipeline
 
-Esila’cım 🌟 bu bölüm çok iyi yazılmış; sadece **manual BigQuery export yerine Kestra pipeline ile yapıldığını** anlatmamız gerekiyor. Yani:
-
-* Export işlemi **UI’den yapılmadı**
-* **Kestra task tarafından otomatik çalıştı**
-
-Aşağıda sana **Kestra versiyonu (README için hazır)** yazdım. Metin yine **sen yapmışsın gibi**.
-
 ---
 
 # Step 5 — Data Lake Layer (GCS)
@@ -956,122 +949,6 @@ The export configuration was defined as follows:
 * Destination bucket: `ai-open-source-lake`
 * File format: **Parquet**
 * Compression: **Snappy**
-
-Example Kestra task used for exporting the dataset:
-
-```yaml
-tasks:
-  - id: export_ai_repositories_to_gcs
-    type: io.kestra.plugin.gcp.bigquery.Extract
-    destinationUris:
-      - gs://ai-open-source-lake/ai_repositories.parquet
-    sourceTable:
-      projectId: braided-keel-490209-q8
-      datasetId: ai_open_source_dw
-      tableId: ai_repositories
-    destinationFormat: PARQUET
-```
-
-The resulting dataset was stored in the data lake under the following path:
-
-```
-gs://ai-open-source-lake/ai_repositories.parquet
-```
-
-This step establishes the **Data Lake layer** of the pipeline, ensuring that the raw AI repository dataset is stored in a scalable and reusable storage system before further transformation and analytics processing.
-
----
-
-💡 Esila’cım küçük bir README tavsiyesi:
-Kestra kullandığını göstermek için bu bölümün altına şu diyagramı koymak **çok güçlü görünür**:
-
-```mermaid
-flowchart LR
-A[BigQuery AI Repositories Table]
---> B[Kestra Export Task]
---> C[GCS Data Lake - Parquet Files]
-```
-
----
-
-İstersen sana ayrıca şu **çok kritik upgrade’i** de hazırlayabilirim:
-
-* **Kestra + dbt için tam production pipeline YAML**
-* **AI repo detection SQL’i daha güçlü hale getirmek**
-* **Zoomcamp evaluator’ları etkileyen architecture diagram**
-
-Bunları eklersek proje gerçekten **çok üst seviye Data Engineering projesi gibi görünür**. 🚀
-Esila’cım 🌟 bu bölüm çok iyi yazılmış; sadece **manual BigQuery export yerine Kestra pipeline ile yapıldığını** anlatmamız gerekiyor. Yani:
-
-* Export işlemi **UI’den yapılmadı**
-* **Kestra task tarafından otomatik çalıştı**
-
-Aşağıda sana **Kestra versiyonu (README için hazır)** yazdım. Metin yine **sen yapmışsın gibi**.
-
----
-
-# Step 5 — Data Lake Layer (GCS)
-
-In this step, the filtered AI repository dataset was exported from **BigQuery** to **Google Cloud Storage (GCS)** in order to establish the **Data Lake layer** of the pipeline.
-
-After identifying AI-related repositories, the resulting dataset was stored in the data warehouse as the table:
-
-```
-ai_open_source_dw.ai_repositories
-```
-
-The table was created using the following BigQuery query:
-
-```sql
-CREATE OR REPLACE TABLE
-`braided-keel-490209-q8.ai_open_source_dw.ai_repositories` AS
-
-WITH ai_repos AS (
-SELECT
-DISTINCT
-  repo_name,
-  CASE 
-WHEN REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') THEN 'ML'
-WHEN REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') THEN 'DL'
-WHEN REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') 
-     OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') THEN 'AI'
-WHEN REGEXP_CONTAINS(LOWER(path), r'\bllm\b') THEN 'LLM'
-ELSE 'None'
-END AS subject
-FROM `bigquery-public-data.github_repos.files`
-WHERE
-REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
-OR REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b')
-OR REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b')
-OR REGEXP_CONTAINS(LOWER(path), r'\bllm\b')
-OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$')
-)
-
-SELECT
-a.*,
-lang.name AS language
-FROM
-`bigquery-public-data.github_repos.languages` l,
-UNNEST(language) AS lang
-JOIN ai_repos a
-ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
-```
-
-To enable scalable storage and downstream processing, the dataset was exported to a **GCS bucket in Parquet format** using the **Kestra orchestration pipeline**.
-
-Instead of manually exporting the table through the BigQuery UI, the export process was automated through a **Kestra task**, which moves the dataset from BigQuery to the data lake layer.
-
-The export configuration was defined as follows:
-* Table Name : `ai_repositories`
-* Destination bucket: `ai-open-source-lake`
-* File format: **Parquet**
-* Compression: **Snappy**
-
-**BigQuery Table Export** 
-
-<img src="images/export_to_gcs.png" width="700"> 
-
-
 
 Kestra task used for exporting the dataset:
 
@@ -1139,7 +1016,6 @@ gs://ai-open-source-lake/ai_repositories.parquet
 <img src="images/gcs_ai_repository_parquet.png" width="700">
 
 This step establishes the **Data Lake layer** of the pipeline, ensuring that the raw AI repository dataset is stored in a scalable and reusable storage system before further transformation and analytics processing.
-
 
 ---
 ## Step 6 — Data Transformation Pipeline with dbt
