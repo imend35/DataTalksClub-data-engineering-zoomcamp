@@ -20,3 +20,5 @@ In my project, I tried to solve this problem using two methods: Solution with Ke
 Solution with Kestra.md :  https://github.com/imend35/DataTalksClub-data-engineering-zoomcamp/blob/main/project1/Solution%20with%20Kestra.md
 
 Solution with Export without Kestra.md :  https://github.com/imend35/DataTalksClub-data-engineering-zoomcamp/blob/main/project1/Solution%20with%20Export%20without%20Kestra.md
+
+I would like a project evaluation for my solution using Kestra. I prepared the other solution entirely without Kestra in order to improve my skills.
