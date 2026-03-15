@@ -10,7 +10,7 @@ Esila Nur Demirci
 
 The open-source ecosystem has become one of the most important drivers of innovation in Artificial Intelligence. Thousands of developers around the world contribute to repositories related to Machine Learning, Deep Learning, Large Language Models (LLMs), and Artificial Intelligence. However, it is difficult to understand how this ecosystem evolves globally and which regions and technologies are leading the development of AI.
 
-This project aims to analyze the global landscape of open-source AI development using large-scale GitHub repository data. By leveraging public datasets available in BigQuery, the project explores trends in AI-related repositories and investigates which AI domains are growing the fastest, which programming languages are most commonly used in AI projects, and how development activity is distributed across countries and continents.
+This project aims to analyze the global landscape of open-source AI development using large-scale GitHub repository data. By leveraging public datasets available in BigQuery, the project explores trends in AI-related repositories and investigates which AI domains are growing the fastest, which programming languages are most commonly used in AI projects.
 
 Through an end-to-end data engineering pipeline, the project collects, processes, and transforms GitHub repository data to build an analytical dataset that supports interactive visualization and exploration.
 
