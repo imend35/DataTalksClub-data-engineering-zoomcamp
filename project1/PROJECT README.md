@@ -31,7 +31,7 @@ This project builds an end-to-end data engineering pipeline to analyze the globa
 ```mermaid
 flowchart LR
 
-A[BigQuery Public Dataset<br>GitHub Repositories] --> B[Airflow Orchestration]
+A[BigQuery Public Dataset<br>GitHub Repositories] --> B[dbt Orchestration]
 
 B --> C[Data Extraction]
 
@@ -58,7 +58,7 @@ This dataset contains information about repositories, commits, files, and progra
 
 **2. Orchestration**
 
-Apache Airflow orchestrates the pipeline and schedules the extraction and transformation tasks.
+dbt orchestrates the pipeline and schedules the extraction and transformation tasks.
 
 **3. Data Lake**
 
