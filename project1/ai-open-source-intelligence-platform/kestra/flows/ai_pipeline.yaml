@@ -1,0 +1,51 @@
+id: ai-repo-pipeline
+namespace: ai.analytics
+
+tasks:
+  - id: extract_repos
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      -- AI repository detection query
+      WITH ai_repos AS (
+      SELECT DISTINCT
+        repo_name,
+        CASE 
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b') THEN 'ML'
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b') THEN 'DL'
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b') OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$') THEN 'AI'
+          WHEN REGEXP_CONTAINS(LOWER(path), r'\bllm\b') THEN 'LLM'
+          ELSE 'None'
+        END AS subject
+      FROM `bigquery-public-data.github_repos.files`
+      WHERE
+        REGEXP_CONTAINS(LOWER(path), r'\bmachine[-_ ]?learning\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\bdeep[-_ ]?learning\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\bartificial[-_ ]?intelligence\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\bllm\b')
+        OR REGEXP_CONTAINS(LOWER(path), r'\.(py|ipynb|r|jl)$')
+      )
+
+      SELECT
+        a.repo_name,
+        a.subject,
+        lang.name AS language
+      FROM `bigquery-public-data.github_repos.languages` l,
+      UNNEST(language) AS lang
+      JOIN ai_repos a
+      ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
+
+  - id: export_ai_repositories_to_gcs
+    type: io.kestra.plugin.gcp.bigquery.Extract
+    sourceTable:
+      projectId: braided-keel-490209-q8
+      datasetId: ai_open_source_dw
+      tableId: ai_repositories
+    destinationUris:
+      - gs://ai-open-source-lake/ai_repositories.parquet
+    destinationFormat: PARQUET
+
+  - id: load_bigquery
+    type: io.kestra.plugin.gcp.bigquery.Load
+
+  - id: run_dbt
+    type: io.kestra.plugin.dbt.Run
