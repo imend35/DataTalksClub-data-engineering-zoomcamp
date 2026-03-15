@@ -499,7 +499,7 @@ You also need a **Google Cloud Platform (GCP)** account with access to:
 ### 2. Clone the Repository
 
 ```
-git clone https://github.com/<your-username>/ai-open-source-intelligence-platform.git
+git clone https://github.com/imend35/DataTalksClub-data-engineering-zoomcamp/tree/main/project1/ai-open-source-intelligence-platform.git
 cd ai-open-source-intelligence-platform
 ```
 
@@ -1095,65 +1095,6 @@ dbt run
 ### dbt Run Result
 
 <img src="images/dbt-run.png" width="700">
----
-
-#  Final Project Structure
-
-Here is the final structure of the project after implementing the dbt transformation layer:
-
-```
-ai-open-source-intelligence-platform
-│
-├── terraform
-│   ├── main.tf
-│   ├── variables.tf
-│   └── outputs.tf
-│
-├── ingestion
-│   └── extract_ai_repositories.py
-│
-├── dbt
-│   ├── dbt_project.yml
-│   ├── models
-│   │
-│   │   ├── staging
-│   │   │   └── stg_ai_repositories.sql
-│   │   │
-│   │   └── marts
-│   │       └── ai_repo_languages.sql
-│           └── ai_repo_ai_type.sql
-├── images
-│   ├── dbt_debug.png
-│   └── dbt_run.png
-│
-└── README.md
-```
-
----
-
-#  Final Data Architecture
-
-The complete data pipeline now looks like this:
-
-```
-GitHub AI Repositories
-        │
-        ▼
-Python Extraction
-        │
-        ▼
-Google Cloud Storage (Raw Data)
-        │
-        ▼
-BigQuery Data Warehouse
-        │
-        ▼
-dbt Transformation Layer
-        │
-        ▼
-Analytics Tables
-```
-
 ---
 
 # Outcome
