@@ -1,4 +1,4 @@
-# Global AI Open-Source Intelligence Platform : A Global Data Engineering Pipeline
+# Global AI Open-Source Intelligence Platform : A Global Data Engineering Pipeline  - Solution with Kestra
 
 ### Mapping the Evolution of Artificial Intelligence Across the World
 
