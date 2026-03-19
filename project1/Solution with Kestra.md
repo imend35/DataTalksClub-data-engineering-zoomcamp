@@ -913,7 +913,7 @@ http://localhost:8080
 Deploy the pipeline by uploading the Kestra flow file:
 
 ```
-kestra/flows/ai_pipeline.yaml
+kestra/flows/ai_pipeline.yml
 ```
 
 Then execute the pipeline from the Kestra UI.
@@ -1025,14 +1025,14 @@ tasks:
       SELECT * 
       FROM `braided-keel-490209-q8.ai_open_source_dw.ai_repositories`
 ```
-<img src="images/ai_repo_pipeline.png" width="700">
+<img src="images/kestra-ai_repo_pipeline.png" width="700">
 
 The resulting dataset was stored in the data lake under the following path:
 
 ```
 gs://ai-open-source-lake/ai_repositories.parquet
 ```
-<img src="images/gcs_ai_repository_parquet.png" width="700">
+<img src="images/kestra_ai_repository_parquet.png" width="700">
 
 This step establishes the **Data Lake layer** of the pipeline, ensuring that the raw AI repository dataset is stored in a scalable and reusable storage system before further transformation and analytics processing.
 
