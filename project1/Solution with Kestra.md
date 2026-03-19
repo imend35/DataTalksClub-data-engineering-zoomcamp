@@ -493,7 +493,7 @@ The pipeline orchestration is implemented using **Kestra**.
 Start the Kestra server using Docker:
 
 ```bash
-docker-compose up
+docker-compose up -d
 ```
 
 Once the service is running, open the Kestra UI:
@@ -896,6 +896,28 @@ Through this exploration process, I was able to:
 
 In this step, the filtered AI repository dataset was exported from **BigQuery** to **Google Cloud Storage (GCS)** in order to establish the **Data Lake layer** of the pipeline.
 
+To start the Kestra Orchestra, I started the Kestra server using Docker:
+
+```
+docker-compose up -d
+```
+
+<img src="images/docker-compose-up-d.png" width="700">
+
+Once the service is running, open the Kestra UI:
+
+```
+http://localhost:8080
+```
+
+Deploy the pipeline by uploading the Kestra flow file:
+
+```
+kestra/flows/ai_pipeline.yaml
+```
+
+Then execute the pipeline from the Kestra UI.
+
 After identifying AI-related repositories, the resulting dataset was stored in the data warehouse as the table:
 
 ```
@@ -956,11 +978,12 @@ id: ai-repo-pipeline
 namespace: ai.analytics
 
 tasks:
-
   - id: extract_repos
     type: io.kestra.plugin.gcp.bigquery.Query
+    projectId: braided-keel-490209-q8
+    destinationTable: braided-keel-490209-q8.ai_open_source_dw.ai_repositories
+    writeDisposition: WRITE_TRUNCATE
     sql: |
-      -- AI repository detection query
       WITH ai_repos AS (
       SELECT DISTINCT
         repo_name,
@@ -988,24 +1011,21 @@ tasks:
       FROM `bigquery-public-data.github_repos.languages` l,
       UNNEST(language) AS lang
       JOIN ai_repos a
-      ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name));
+      ON LOWER(TRIM(l.repo_name)) = LOWER(TRIM(a.repo_name))
 
   - id: export_ai_repositories_to_gcs
-    type: io.kestra.plugin.gcp.bigquery.Extract
-    sourceTable:
-      projectId: braided-keel-490209-q8
-      datasetId: ai_open_source_dw
-      tableId: ai_repositories
-    destinationUris:
-      - gs://ai-open-source-lake/ai_repositories.parquet
-    destinationFormat: PARQUET
-
-  - id: load_bigquery
-    type: io.kestra.plugin.gcp.bigquery.Load
-
-  - id: run_dbt
-    type: io.kestra.plugin.dbt.Run
+    type: io.kestra.plugin.gcp.bigquery.Query
+    projectId: braided-keel-490209-q8
+    sql: |
+      EXPORT DATA OPTIONS(
+        uri='gs://ai-open-source-lake/ai_repositories-*.parquet',
+        format='PARQUET',
+        overwrite=true
+      ) AS
+      SELECT * 
+      FROM `braided-keel-490209-q8.ai_open_source_dw.ai_repositories`
 ```
+<img src="images/ai_repo_pipeline.png" width="700">
 
 The resulting dataset was stored in the data lake under the following path:
 
