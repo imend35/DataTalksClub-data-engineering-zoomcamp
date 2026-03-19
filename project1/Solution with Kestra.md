@@ -974,6 +974,7 @@ The export configuration was defined as follows:
 Kestra task used for exporting the dataset:
 
 ```ai_pipeline.yaml
+
 id: ai-repo-pipeline
 namespace: ai.analytics
 
@@ -1024,6 +1025,36 @@ tasks:
       ) AS
       SELECT * 
       FROM `braided-keel-490209-q8.ai_open_source_dw.ai_repositories`
+
+  - id: run_dbt
+    type: io.kestra.plugin.dbt.cli.DbtCLI
+
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      image: ghcr.io/kestra-io/dbt-bigquery:latest
+      volumes:
+        - /app/gcp-key.json:/app/gcp-key.json
+        - C:/Terraform/ai-open-source-intelligence-platform/dbt:/app/dbt
+
+    env:
+      GOOGLE_APPLICATION_CREDENTIALS: /app/gcp-key.json
+      
+    commands:
+      - dbt deps
+      - dbt run
+    profiles: |
+      gcp_bigquery_profile:
+        outputs:
+          dev:
+            type: bigquery
+            method: service-account
+            project: braided-keel-490209-q8
+            dataset: ai_open_source_dw
+            threads: 4
+            keyfile: /app/gcp-key.json
+            priority: interactive
+        target: dev        
+        
 ```
 <img src="images/kestra-ai_repo_pipeline.png" width="700">
 
